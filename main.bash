@@ -696,7 +696,11 @@ folder_Modify() {
 
     echo "Set permissions for:"
     echo
-
+    echo "1. Read, Write, Execute (Full acces)"
+    echo "2. Read, Write (Modify but not execute)"
+    echo "3. Read Only"
+    echo "4. No Permission"
+    echo "----------------------------------------------------------"
     # Get permissions for the owner
     echo "Owner:"
     owner_perms=$(set_permissions)
