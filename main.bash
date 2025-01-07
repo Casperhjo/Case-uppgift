@@ -736,38 +736,80 @@ folder_Modify() {
                     echo "ERROR: Unable to update permissions."
                 fi
                 ;;
-            5)
-                clear
-                echo "Toggle Sticky Bit for the folder:"
-                echo "1. Set Sticky Bit"
-                echo "2. Remove Sticky Bit"
-                read -p "Enter your choice [1-2]: " sticky_choice
-                if [[ "$sticky_choice" -eq 1 ]]; then
-                    sudo chmod +t "$folder_path"
-                    [[ $? -eq 0 ]] && echo "Sticky Bit set." || echo "ERROR: Unable to set Sticky Bit."
-                elif [[ "$sticky_choice" -eq 2 ]]; then
-                    sudo chmod -t "$folder_path"
-                    [[ $? -eq 0 ]] && echo "Sticky Bit removed." || echo "ERROR: Unable to remove Sticky Bit."
-                else
-                    echo "Invalid choice."
-                fi
-                ;;
-            6)
-                clear
-                echo "Toggle Setgid for the folder:"
-                echo "1. Set Setgid"
-                echo "2. Remove Setgid"
-                read -p "Enter your choice [1-2]: " setgid_choice
-                if [[ "$setgid_choice" -eq 1 ]]; then
-                    sudo chmod g+s "$folder_path"
-                    [[ $? -eq 0 ]] && echo "Setgid set." || echo "ERROR: Unable to set Setgid."
-                elif [[ "$setgid_choice" -eq 2 ]]; then
-                    sudo chmod g-s "$folder_path"
-                    [[ $? -eq 0 ]] && echo "Setgid removed." || echo "ERROR: Unable to remove Setgid."
-                else
-                    echo "Invalid choice."
-                fi
-                ;;
+5)
+    clear
+    echo "Toggle Sticky Bit for the folder:"
+    echo "1. Set Sticky Bit"
+    echo "2. Remove Sticky Bit"
+    read -p "Enter your choice [1-2]: " sticky_choice
+
+    if [[ "$sticky_choice" -eq 1 ]]; then
+        sudo chmod +t "$folder_path"
+        if [[ $? -eq 0 ]]; then
+            # Kontrollera om Sticky Bit sattes korrekt
+            permissions=$(stat -c '%A' "$folder_path")
+            if [[ "${permissions:8:1}" == "t" || "${permissions:8:1}" == "T" ]]; then
+                echo "Sticky Bit set."
+            else
+                echo "ERROR: Sticky Bit not set as expected."
+            fi
+        else
+            echo "ERROR: Unable to set Sticky Bit."
+        fi
+    elif [[ "$sticky_choice" -eq 2 ]]; then
+        sudo chmod -t "$folder_path"
+        if [[ $? -eq 0 ]]; then
+            # Kontrollera om Sticky Bit togs bort korrekt
+            permissions=$(stat -c '%A' "$folder_path")
+            if [[ "${permissions:8:1}" != "t" && "${permissions:8:1}" != "T" ]]; then
+                echo "Sticky Bit removed."
+            else
+                echo "ERROR: Sticky Bit not removed as expected."
+            fi
+        else
+            echo "ERROR: Unable to remove Sticky Bit."
+        fi
+    else
+        echo "Invalid choice."
+    fi
+    ;;
+6)
+    clear
+    echo "Toggle Setgid for the folder:"
+    echo "1. Set Setgid"
+    echo "2. Remove Setgid"
+    read -p "Enter your choice [1-2]: " setgid_choice
+
+    if [[ "$setgid_choice" -eq 1 ]]; then
+        sudo chmod g+s "$folder_path"
+        if [[ $? -eq 0 ]]; then
+            # Kontrollera om Setgid sattes korrekt
+            permissions=$(stat -c '%A' "$folder_path")
+            if [[ "${permissions:5:1}" == "s" || "${permissions:5:1}" == "S" ]]; then
+                echo "Setgid set."
+            else
+                echo "ERROR: Setgid not set as expected."
+            fi
+        else
+            echo "ERROR: Unable to set Setgid."
+        fi
+    elif [[ "$setgid_choice" -eq 2 ]]; then
+        sudo chmod g-s "$folder_path"
+        if [[ $? -eq 0 ]]; then
+            # Kontrollera om Setgid togs bort korrekt
+            permissions=$(stat -c '%A' "$folder_path")
+            if [[ "${permissions:5:1}" != "s" && "${permissions:5:1}" != "S" ]]; then
+                echo "Setgid removed."
+            else
+                echo "ERROR: Setgid not removed as expected."
+            fi
+        else
+            echo "ERROR: Unable to remove Setgid."
+        fi
+    else
+        echo "Invalid choice."
+    fi
+    ;;
             7)
                 echo "Modification canceled. Returning to menu."
                 ;;
