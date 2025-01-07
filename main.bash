@@ -399,11 +399,11 @@ group_View(){
   	# Lista användare som är medlemmar i gruppen (från /etc/group)
    	secondary_users=$(getent group "$groupname" | awk -F: '{print $4}' | tr ',' '\n')
 
-    	echo "Users in group 'groupname':"
+    	echo "Users in group '$groupname':"
      	echo
       	echo "Primary group members:"
        	if [[ -n "primary_users" ]]; then
-		echo "primary_users"
+		echo "$primary_users"
   	else
    		echo  "None"
      	fi
