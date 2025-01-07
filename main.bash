@@ -699,9 +699,6 @@ folder_Modify() {
 	 	esac
    		}
 
-     		echo "Set permissions for:"
-       		echo
-
   		# Välj för avändare
     		echo "Owner:"
       		owner_perms=$(set_permissions)
