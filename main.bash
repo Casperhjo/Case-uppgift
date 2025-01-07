@@ -394,7 +394,7 @@ group_View(){
       	group_gid=$(getent group "groupname" | cut -d: -f3)
 
 	# Lista användare med gruppen som primär grupp (från /etc/passwd)
- 	primary_users=$(awk -F: -v gid="groupname" '$4 == gid {print $1}' /etc/passwd)
+ 	primary_users=$(awk -F: -v gid="$groupname" '$4 == gid {print $1}' /etc/passwd)
 
   	# Lista användare som är medlemmar i gruppen (från /etc/group)
    	secondary_users=$(getent group "$groupname" | awk -F: '{print $4}' | tr ',' '\n')
