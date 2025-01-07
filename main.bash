@@ -717,10 +717,15 @@ folder_Modify() {
     other_perms=$(set_permissions)
 
     # Bygg rättighetssträngen
-    chmod_string="${owner_perms:0:1}${group_perms:0:1}${other_perms:0:1}"
-    chmod_octal=$(printf "%d" "'$(( (owner_perms:0:3 | group_perms:0:3 | other_perms :)))
-    ## Cionversion will be cleaner-executuin)<<mathcountb40")
+    permissions="$owner_perms$group_perms$other_perms"
 
+    # Applicera rättigheterna
+    if chmod u="${owner_perms}" g="${group_perms}" o="${other_perms}" "$folder_path"; then
+        echo "Permissions successfully updated to '$permissions'."
+    else
+        echo "ERROR: Unable to update permissions."
+    fi
+    ;;
             4)
                 clear
                 read -p "Enter the new permissions (e.g., 755): " permissions
