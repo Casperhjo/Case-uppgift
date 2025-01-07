@@ -581,33 +581,24 @@ folder_View() {
         echo "Folder: $folder_path"
         echo "----------------------------------------------------------"
 
-        # Hämta detaljer
+        # Lista attribut
         permissions=$(ls -ld "$folder_path" | awk '{print $1}')
         owner=$(ls -ld "$folder_path" | awk '{print $3}')
         group=$(ls -ld "$folder_path" | awk '{print $4}')
-        last_modified=$(stat -c '%y' "$folder_path")
         size=$(du -sh "$folder_path" | awk '{print $1}')
-
-        # Översätt rättigheter
-        owner_perms=${permissions:1:3}
-        group_perms=${permissions:4:3}
-        other_perms=${permissions:7:3}
-
-        # Kontrollera Sticky Bit och Setgid
+        last_modified=$(stat -c '%y' "$folder_path")
         sticky_bit=$(echo "$permissions" | grep -q 't' && echo "On" || echo "Off")
         setgid=$(echo "$permissions" | grep -q 's' && echo "On" || echo "Off")
 
-        # Presentera informationen
+        # Visa attribut
         echo "Owner:           $owner"
         echo "Group:           $group"
-        echo "Permissions:"
-        echo "$(translate_permissions "$owner_perms")"
-        echo "$(translate_permissions "$group_perms")"
-        echo "$(translate_permissions "$other_perms")"
+        echo "Permissions:     $(translate_permissions "$permissions")"
         echo "Sticky Bit:      $sticky_bit"
         echo "Setgid:          $setgid"
         echo "Size:            $size"
         echo "Last Modified:   $last_modified"
+        echo "----------------------------------------------------------"
 
     else
         echo "ERROR: Folder '$folder_path' does not exist."
