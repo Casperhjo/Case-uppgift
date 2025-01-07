@@ -500,15 +500,18 @@ group_Delete(){
     #Frågar efter gruppnamn
     read -p "Enter the group name to delete: " groupname
 
-    group_gid=$(getent group "$groupname" | cut -d: -f3)
-    if [[ "$group_gid" -lt 1000 ]]; then
-    	return
-    fi
     #Kollar att gruppen existerar
     if ! getent group "$groupname" &>/dev/null; then
         echo "The group '$groupname' does not exist."
         read -p "Press enter to return to the menu..." enter
         return
+    fi
+    
+        group_gid=$(getent group "$groupname" | cut -d: -f3)
+    if [[ "$group_gid" -lt 1000 ]]; then
+    	echo "You can not remove that group"
+     	read -p "Press enter to return to the menu..." enter
+    	return
     fi
 
     #Bekräfta borttagningen 
