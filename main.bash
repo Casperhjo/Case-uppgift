@@ -681,7 +681,7 @@ folder_Modify() {
     echo "Select new permissions for the folder:"
     echo
 
-    # Funktion för att välja behörigheter (read, write, execute)
+    # Function to get permission input from the user
     set_permissions() {
         echo "1. Read, Write, Execute (Full access)"
         echo "2. Read, Write (Modify but not execute)"
@@ -691,37 +691,39 @@ folder_Modify() {
         read -p "Enter your choice [1-4]: " choice
 
         case $choice in
-            1) echo "rwx" ;;  # Fullständig åtkomst
-            2) echo "rw-" ;;  # Läsa och skriva
-            3) echo "r--" ;;  # Endast läsa
-            4) echo "---" ;;  # Ingen åtkomst
-            *) echo "---" ;;  # Standard till ingen åtkomst
+            1) echo "rwx" ;;  # Full access
+            2) echo "rw-" ;;  # Read and write
+            3) echo "r--" ;;  # Read-only
+            4) echo "---" ;;  # No access
+            *) echo "---" ;;  # Default to no access
         esac
     }
 
     echo "Set permissions for:"
     echo
 
-    # Välj för ägare
+    # Get permissions for the owner
     echo "Owner:"
     owner_perms=$(set_permissions)
     echo
 
-    # Välj för grupp
+    # Get permissions for the group
     echo "Group:"
     group_perms=$(set_permissions)
     echo
 
-    # Välj för andra
+    # Get permissions for others
     echo "Others:"
     other_perms=$(set_permissions)
 
-    # Bygg rättighetssträngen
-    permissions="$owner_perms$group_perms$other_perms"
-
-    # Applicera rättigheterna
-    if chmod u="${owner_perms}" g="${group_perms}" o="${other_perms}" "$folder_path"; then
-        echo "Permissions successfully updated to '$permissions'."
+    # Apply the permissions using three separate chmod commands
+    if chmod "u=$owner_perms" "$folder_path" &&
+       chmod "g=$group_perms" "$folder_path" &&
+       chmod "o=$other_perms" "$folder_path"; then
+        echo "Permissions successfully updated to:"
+        echo "Owner: $owner_perms"
+        echo "Group: $group_perms"
+        echo "Others: $other_perms"
     else
         echo "ERROR: Unable to update permissions."
     fi
