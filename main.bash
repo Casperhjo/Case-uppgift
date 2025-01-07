@@ -746,7 +746,7 @@ folder_Modify() {
     if [[ "$sticky_choice" -eq 1 ]]; then
         sudo chmod +t "$folder_path"
         if [[ $? -eq 0 ]]; then
-            # Kontrollera om Sticky Bit sattes korrekt
+            # Kontrollera om Sticky Bit är satt (antingen liten eller stor 't')
             permissions=$(stat -c '%A' "$folder_path")
             if [[ "${permissions:8:1}" == "t" || "${permissions:8:1}" == "T" ]]; then
                 echo "Sticky Bit set."
@@ -759,7 +759,7 @@ folder_Modify() {
     elif [[ "$sticky_choice" -eq 2 ]]; then
         sudo chmod -t "$folder_path"
         if [[ $? -eq 0 ]]; then
-            # Kontrollera om Sticky Bit togs bort korrekt
+            # Kontrollera om Sticky Bit är borttaget
             permissions=$(stat -c '%A' "$folder_path")
             if [[ "${permissions:8:1}" != "t" && "${permissions:8:1}" != "T" ]]; then
                 echo "Sticky Bit removed."
@@ -783,7 +783,7 @@ folder_Modify() {
     if [[ "$setgid_choice" -eq 1 ]]; then
         sudo chmod g+s "$folder_path"
         if [[ $? -eq 0 ]]; then
-            # Kontrollera om Setgid sattes korrekt
+            # Kontrollera om Setgid är satt (antingen liten eller stor 's')
             permissions=$(stat -c '%A' "$folder_path")
             if [[ "${permissions:5:1}" == "s" || "${permissions:5:1}" == "S" ]]; then
                 echo "Setgid set."
@@ -796,7 +796,7 @@ folder_Modify() {
     elif [[ "$setgid_choice" -eq 2 ]]; then
         sudo chmod g-s "$folder_path"
         if [[ $? -eq 0 ]]; then
-            # Kontrollera om Setgid togs bort korrekt
+            # Kontrollera om Setgid är borttaget
             permissions=$(stat -c '%A' "$folder_path")
             if [[ "${permissions:5:1}" != "s" && "${permissions:5:1}" != "S" ]]; then
                 echo "Setgid removed."
