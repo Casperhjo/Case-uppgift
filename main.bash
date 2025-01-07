@@ -593,7 +593,7 @@ folder_View() {
         # Visa attribut
         echo "Owner:           $owner"
         echo "Group:           $group"
-        echo "Permissions:     $(translate_permissions "$permissions")"
+        echo "Permissions: \n    $(translate_permissions "$permissions")"
         echo "Sticky Bit:      $sticky_bit"
         echo "Setgid:          $setgid"
         echo "Size:            $size"
@@ -680,25 +680,52 @@ folder_Modify() {
                 echo "----------------------------------------------------------"
                 echo "Select permissions for:"
                 echo
-                echo "Owner:"
-                owner_perms=$(select_permissions)
-                echo
-                echo "Group:"
-                group_perms=$(select_permissions)
-                echo
-                echo "Others:"
-                other_perms=$(select_permissions)
 
-                # Bygg rättighetssträngen
-                permissions="$owner_perms$group_perms$other_perms"
+		#Funktion för att välja behörigheter (read, write, execute)
+  		set_permissions() {
+    		echo "1. Read, Write, Execute (Full access)"
+      		echo "2. Read, Write (Modify but not execute)"
+		echo "3. Read Only"
+  		echo "4. No Permissions"
+    		echo "----------------------------------------------------------"
+      		read -p "Enter your choice [1-4]: " choice
 
-                # Applicera rättigheterna
-                if sudo chmod "$permissions" "$folder_path"; then
-                    echo "Permissions successfully updated to '$permissions'."
-                else
-                    echo "ERROR: Unable to update permissions."
-                fi
-                ;;
+ 		case $choice in
+   			1) echo "rwx" ;; # Fullständig åtkomst
+      			2) echo "rw-" ;; # Läsa och skriva
+			3) echo "r--" ;; # Endast läsa
+   			4) echo "---" ;; # Ingen åtkomst
+      			*) echo "---" ;; # Standard till ingen åtkomst
+	 	esac
+   		}
+
+     		echo "Set permissions for:"
+       		echo
+
+  		# Välj för avändare
+    		echo "Owner:"
+      		owner_perms=$(set_permissions)
+		echo
+
+    		# Välj för grupp
+      		echo "Group:"
+		group_perms=$(set_permissions)
+  		echo
+
+    		# Välj för andra
+      		echo "Others:"
+		other_perms=$(set_permissions)
+
+  		# Bygg rättighetssträngen
+    		permissions="$owner_perms$group_perms$other_perms"
+
+      		# Applicera rättigheterna
+		if chmod u="${owner_perms}" g="${group_perms}" o="${other_perms}" "$folder_path"; then
+  			echo "Permissions succesfully updated to '$permissions'."
+     		else
+       			echo "ERROR: unable to update permissions."
+	  	fi
+    		;;
             4)
                 clear
                 read -p "Enter the new permissions (e.g., 755): " permissions
