@@ -593,7 +593,8 @@ folder_View() {
         # Visa attribut
         echo "Owner:           $owner"
         echo "Group:           $group"
-        echo "Permissions: \n    $(translate_permissions "$permissions")"
+        echo "Permissions: "
+	echo "$(translate_permissions "$permissions")"
         echo "Sticky Bit:      $sticky_bit"
         echo "Setgid:          $setgid"
         echo "Size:            $size"
