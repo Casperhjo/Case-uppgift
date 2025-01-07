@@ -719,7 +719,6 @@ folder_Modify() {
     # Bygg rättighetssträngen
     chmod_string="${owner_perms:0:1}${group_perms:0:1}${other_perms:0:1}"
     chmod_octal=$(printf "%d" "'$(( (owner_perms:0:3 | group_perms:0:3 | other_perms :)))
-## Conversion will be cleaner-execution)<<matcountb40""
             4)
                 clear
                 read -p "Enter the new permissions (e.g., 755): " permissions
