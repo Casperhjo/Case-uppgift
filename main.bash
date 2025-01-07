@@ -716,12 +716,14 @@ folder_Modify() {
     echo "Others:"
     other_perms=$(set_permissions)
 
-    # Build the permission string
-    full_permissions="u=$owner_perms,g=$group_perms,o=$other_perms"
-
-    # Apply the permissions using chmod
-    if sudo chmod "$full_permissions" "$folder_path"; then
-        echo "Permissions successfully updated to '$full_permissions'."
+    # Apply the permissions using three separate chmod commands
+    if chmod "u=$owner_perms" "$folder_path" &&
+       chmod "g=$group_perms" "$folder_path" &&
+       chmod "o=$other_perms" "$folder_path"; then
+        echo "Permissions successfully updated to:"
+        echo "Owner: $owner_perms"
+        echo "Group: $group_perms"
+        echo "Others: $other_perms"
     else
         echo "ERROR: Unable to update permissions."
     fi
