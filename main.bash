@@ -143,7 +143,7 @@ user_List(){
 	echo "			List of Login Users"
 	echo "----------------------------------------------------------"
 	echo 
-	echo -e "USERNAME	FULL NAME	HOME DIRECTORY"
+	echo -e "USERNAME	FULL NAME		HOME DIRECTORY"
  	# Lista alla användare med UID >= 1000 och giltiga sakl
   	awk -F: '$3 >= 1000 && $7 !~ /nologin|false/ {printf "%-15s %-20s %-20s\n", $1, $5, $6}' /etc/passwd # $1:användarnamn $5:kommentar $6:hemkatalog
    	
@@ -338,7 +338,8 @@ group_Add() {
     #Kollar om gruppen redan existerar
     if getent group "$groupname" &>/dev/null; then
         echo "Error: The group '$groupname' already exists."
-        read -p "Press enter to return to the menu..." enter    
+        read -p "Press enter to return to the menu..." enter  
+	return
     fi
 
     #Skapar nya gruppen
@@ -390,7 +391,7 @@ group_View(){
     	fi
 
      	# Hämta GID för gruppen
-      	group_gid=$(getentg group "groupname" | cut -d: -f3)
+      	group_gid=$(getent group "groupname" | cut -d: -f3)
 
 	# Lista användare med gruppen som primär grupp (från /etc/passwd)
  	primary_users=$(awk -F: -v gid="groupname" '$4 == gid {print $1}' /etc/passwd)
@@ -452,7 +453,7 @@ group_Modify(){
        			if id "$username" &>/dev/null; then
 	  			sudo usermod -aG "$groupname" "$username"
       				if [[ $? -eq 0 ]]; then
-	  				echo "User 'username' has been added to group '$groupname'."
+	  				echo "User '$username' has been added to group '$groupname'."
        				else
 	   				echo "Failed to add user '$username' to group "$groupname"."
 				fi
@@ -504,7 +505,7 @@ group_Delete(){
     if ! getent group "$groupname" &>/dev/null; then
         echo "The group '$groupname' does not exist."
         read -p "Press enter to return to the menu..." enter
-        
+        return
     fi
 
     #Bekräfta borttagningen 
@@ -568,40 +569,51 @@ folder_List() {
 folder_View() {
     clear
     echo "=========================================================="
-    echo "         SYSTEM MANAGER (version 1.0.0)"
+    echo "          SYSTEM MANAGER (version 1.0.0)"
     echo "             View Folder Properties"
     echo "----------------------------------------------------------"
     echo
 
-    read -p "Enter Folder Name: " folder_name
-    
-    # Kollar att mappen existerar
-    if [ -d "$folder_name" ]; then
-    	echo "Folder: $folder_name"
-    	echo "Permissions: $(ls -ld "$folder_name" | awk '{print $1}')"
-        sticky_bit=$(echo "$permissions" | awk '{print substr($1, 10, 1)}')
-        setgid_bit=$(echo "$permissions" | awk '{print substr($1, 5, 1)}')
-    if [ "$sticky_bit" == "t" ]; then
-        echo "Sticky Bit: Enabled"
+    read -p "Enter the folder path to view: " folder_path
+
+    # Kontrollera om mappen existerar
+    if [ -d "$folder_path" ]; then
+        echo "Folder: $folder_path"
+        echo "----------------------------------------------------------"
+
+        # Hämta detaljer
+        permissions=$(ls -ld "$folder_path" | awk '{print $1}')
+        owner=$(ls -ld "$folder_path" | awk '{print $3}')
+        group=$(ls -ld "$folder_path" | awk '{print $4}')
+        last_modified=$(stat -c '%y' "$folder_path")
+        size=$(du -sh "$folder_path" | awk '{print $1}')
+
+        # Översätt rättigheter
+        owner_perms=${permissions:1:3}
+        group_perms=${permissions:4:3}
+        other_perms=${permissions:7:3}
+
+        # Kontrollera Sticky Bit och Setgid
+        sticky_bit=$(echo "$permissions" | grep -q 't' && echo "On" || echo "Off")
+        setgid=$(echo "$permissions" | grep -q 's' && echo "On" || echo "Off")
+
+        # Presentera informationen
+        echo "Owner:           $owner"
+        echo "Group:           $group"
+        echo "Permissions:"
+        echo "  Owner:         $(translate_permissions "$owner_perms")"
+        echo "  Group:         $(translate_permissions "$group_perms")"
+        echo "  Others:        $(translate_permissions "$other_perms")"
+        echo "Sticky Bit:      $sticky_bit"
+        echo "Setgid:          $setgid"
+        echo "Size:            $size"
+        echo "Last Modified:   $last_modified"
+
     else
-        echo "Sticky Bit: Not Set" 
+        echo "ERROR: Folder '$folder_path' does not exist."
     fi
-        
-    if [ "$setgid_bit" == "s" ]; then
-        echo "Setgid: Enabled"
-    else
-        echo "Setgid: Not Set"
-    fi
-    	echo "Owner: $(ls -ld "$folder_name" | awk '{print $3}')"
-    	echo "Group: $(ls -ld "$folder_name" | awk '{print $4}')"
-    	echo "Size: $(du -sh "$folder_name" | awk '{print $1}')"
-        last_modified=$(stat --format='%y' "$folder_name")
-        echo "Last Modified: $last_modified"
-    	echo "Files and Subfolders:"
-    	ls -l "$folder_name"
-    else
-    	echo "Folder does not exist. Please enter a valid folder name."
-    fi
+
+    echo "----------------------------------------------------------"
     read -p "Press enter to return to the menu..." enter
 }
 
@@ -609,82 +621,186 @@ folder_Modify() {
     clear
     echo "=========================================================="
     echo "          SYSTEM MANAGER (version 1.0.0)"
-    echo "             Modify Folder Properties"
+    echo "        List and Modify Folder Attributes"
     echo "----------------------------------------------------------"
     echo
 
-    read -p "Enter the folder name you want to modify: " folder_name
-    if [ -d "$folder_name" ]; then
-      clear
-      echo "Choose the properties you want to modify"
-      echo "1. Folder Name"
-      echo "2. Permissions"
-      echo "3. Owner"
-      echo "4. Group"
-      echo "5. Size"
-      read -p "Enter your choice: " choice
+    read -p "Enter the folder path to manage: " folder_path
 
-      case $choice in
+    # Kontrollera om mappen finns
+    if [ -d "$folder_path" ]; then
+        clear
+        echo "Current Properties of the Folder:"
+        echo "----------------------------------------------------------"
+
+        # Lista attribut
+        permissions=$(ls -ld "$folder_path" | awk '{print $1}')
+        owner=$(ls -ld "$folder_path" | awk '{print $3}')
+        group=$(ls -ld "$folder_path" | awk '{print $4}')
+        size=$(du -sh "$folder_path" | awk '{print $1}')
+        last_modified=$(stat -c '%y' "$folder_path")
+        sticky_bit=$(echo "$permissions" | grep -q 't' && echo "On" || echo "Off")
+        setgid=$(echo "$permissions" | grep -q 's' && echo "On" || echo "Off")
+
+        # Visa attribut
+        echo "Owner:           $owner"
+        echo "Group:           $group"
+        echo "Permissions:     $(translate_permissions "$permissions")"
+        echo "Sticky Bit:      $sticky_bit"
+        echo "Setgid:          $setgid"
+        echo "Size:            $size"
+        echo "Last Modified:   $last_modified"
+        echo "----------------------------------------------------------"
+
+        # Ändra attribut
+        echo "What would you like to modify?"
+        echo "1. Change Owner"
+        echo "2. Change Group"
+        echo "3. Change Permissions (User-Friendly)"
+        echo "4. Change Permissions (Advanced Mode)"
+        echo "5. Toggle Sticky Bit"
+        echo "6. Toggle Setgid"
+        echo "7. Cancel"
+        echo "----------------------------------------------------------"
+        read -p "Enter your choice [1-7]: " choice
+
+        case $choice in
             1)
-                  clear
-                  read -p "Enter the new folder name: " new_folder_name
-                  sudo mv "$folder_name" "$new_folder_name" &>/dev/null
-                  if [ $? -eq 0 ]; then
-                    echo "The folder name has been changed"
-                  else
-                    echo "ERROR: You cannot have this folder name."
-                  fi
-                  ;;
+                clear
+                read -p "Enter the new owner (username): " owner
+                if sudo chown "$owner" "$folder_path"; then
+                    echo "Owner successfully updated to '$owner'."
+                else
+                    echo "ERROR: Unable to update owner."
+                fi
+                ;;
+            2)
+                clear
+                read -p "Enter the new group: " group
+                if sudo chgrp "$group" "$folder_path"; then
+                    echo "Group successfully updated to '$group'."
+                else
+                    echo "ERROR: Unable to update group."
+                fi
+                ;;
+            3)
+                clear
+                echo "Current Permissions: $(ls -ld "$folder_path" | awk '{print $1}')"
+                echo "----------------------------------------------------------"
+                echo "Select permissions for:"
+                echo
+                echo "Owner:"
+                owner_perms=$(select_permissions)
+                echo
+                echo "Group:"
+                group_perms=$(select_permissions)
+                echo
+                echo "Others:"
+                other_perms=$(select_permissions)
 
-          2)
-                  clear
-                  read -p "Enter the new permissions: " permissions
-                  sudo chmod "$permissions" "$folder_name" &>/dev/null
-                  if [ $? -eq 0 ]; then
-                    echo "The permissions have been changed"
-                  else
-                    echo "ERROR: You cannot have these permissions."
-                  fi
-                  ;;
+                # Bygg rättighetssträngen
+                permissions="$owner_perms$group_perms$other_perms"
 
-          3)
-                  clear
-                  read -p "Enter the new owner: " owner
-                  sudo chown "$owner" "$folder_name" &>/dev/null
-                  if [ $? -eq 0 ]; then
-                    echo "The owner has been changed"
-                  else
-                    echo "ERROR: You cannot have this owner."
-                  fi
-                  ;;
-
-          4)
-                  clear
-                  read -p "Enter the new group: " group
-                  sudo chgrp "$group" "$folder_name" &>/dev/null
-                  if [ $? -eq 0 ]; then
-                    echo "The group has been changed"
-                  else
-                    echo "ERROR: You cannot have this group."
-                  fi
-                  ;;
-
-          5)
-                  clear
-                  echo "The size of a folder is determined by its contents."
-                  echo "You cannot directly change the size."
-                  ;;
-
-          *)
-                  echo "Invalid input. returning to the menu."
-                  ;;
-
-      esac
+                # Applicera rättigheterna
+                if sudo chmod "$permissions" "$folder_path"; then
+                    echo "Permissions successfully updated to '$permissions'."
+                else
+                    echo "ERROR: Unable to update permissions."
+                fi
+                ;;
+            4)
+                clear
+                read -p "Enter the new permissions (e.g., 755): " permissions
+                if sudo chmod "$permissions" "$folder_path"; then
+                    echo "Permissions successfully updated to '$permissions'."
+                else
+                    echo "ERROR: Unable to update permissions."
+                fi
+                ;;
+            5)
+                clear
+                echo "Toggle Sticky Bit for the folder:"
+                echo "1. Set Sticky Bit"
+                echo "2. Remove Sticky Bit"
+                read -p "Enter your choice [1-2]: " sticky_choice
+                if [[ "$sticky_choice" -eq 1 ]]; then
+                    sudo chmod +t "$folder_path"
+                    [[ $? -eq 0 ]] && echo "Sticky Bit set." || echo "ERROR: Unable to set Sticky Bit."
+                elif [[ "$sticky_choice" -eq 2 ]]; then
+                    sudo chmod -t "$folder_path"
+                    [[ $? -eq 0 ]] && echo "Sticky Bit removed." || echo "ERROR: Unable to remove Sticky Bit."
+                else
+                    echo "Invalid choice."
+                fi
+                ;;
+            6)
+                clear
+                echo "Toggle Setgid for the folder:"
+                echo "1. Set Setgid"
+                echo "2. Remove Setgid"
+                read -p "Enter your choice [1-2]: " setgid_choice
+                if [[ "$setgid_choice" -eq 1 ]]; then
+                    sudo chmod g+s "$folder_path"
+                    [[ $? -eq 0 ]] && echo "Setgid set." || echo "ERROR: Unable to set Setgid."
+                elif [[ "$setgid_choice" -eq 2 ]]; then
+                    sudo chmod g-s "$folder_path"
+                    [[ $? -eq 0 ]] && echo "Setgid removed." || echo "ERROR: Unable to remove Setgid."
+                else
+                    echo "Invalid choice."
+                fi
+                ;;
+            7)
+                echo "Modification canceled. Returning to menu."
+                ;;
+            *)
+                echo "Invalid input. Returning to menu."
+                ;;
+        esac
     else
-                  echo "Folder does not exist. Please enter a valid folder name."
+        echo "ERROR: Folder '$folder_path' does not exist. Please enter a valid folder path."
     fi
 
-         	  read -p "Press enter to return to the menu..." enter
+    echo "----------------------------------------------------------"
+    read -p "Press enter to return to the menu..." enter
+}
+# Funktion för att välja rättigheter
+select_permissions() {
+    echo "1. Read, Write, Execute"
+    echo "2. Read, Write"
+    echo "3. Read Only"
+    echo "4. No Permissions"
+    echo "----------------------------------------------------------"
+    read -p "Enter your choice [1-4]: " choice
+
+    case $choice in
+        1) echo "7" ;;  # rwx
+        2) echo "6" ;;  # rw-
+        3) echo "4" ;;  # r--
+        4) echo "0" ;;  # ---
+        *) echo "0" ;;  # Default to no permissions
+    esac
+}
+# Funktion för att översätta rättigheter
+translate_permissions() {
+    local perms=$1
+    local result=""
+
+    # Owner
+    [[ ${perms:1:1} == "r" ]] && result+="Owner: Read " || result+="Owner: No Read "
+    [[ ${perms:2:1} == "w" ]] && result+="Write " || result+="No Write "
+    [[ ${perms:3:1} == "x" ]] && result+="Execute\n" || result+="No Execute\n"
+
+    # Group
+    [[ ${perms:4:1} == "r" ]] && result+="Group: Read " || result+="Group: No Read "
+    [[ ${perms:5:1} == "w" ]] && result+="Write " || result+="No Write "
+    [[ ${perms:6:1} == "x" ]] && result+="Execute\n" || result+="No Execute\n"
+
+    # Others
+    [[ ${perms:7:1} == "r" ]] && result+="Others: Read " || result+="Others: No Read "
+    [[ ${perms:8:1} == "w" ]] && result+="Write " || result+="No Write "
+    [[ ${perms:9:1} == "x" ]] && result+="Execute" || result+="No Execute"
+
+    echo -e "$result"
 }
 
 folder_Delete() {
