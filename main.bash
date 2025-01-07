@@ -631,7 +631,7 @@ folder_Modify() {
         group=$(ls -ld "$folder_path" | awk '{print $4}')
         size=$(du -sh "$folder_path" | awk '{print $1}')
         last_modified=$(stat -c '%y' "$folder_path")
-        sticky_bit=$(echo "$permissions" | grep -q 't' && echo "On" || echo "Off")
+        sticky_bit=$(echo "$permissions" | grep -q 'T' && echo "On" || echo "Off")
         setgid=$(echo "$permissions" | grep -q 's' && echo "On" || echo "Off")
 
         # Visa attribut
