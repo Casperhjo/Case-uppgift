@@ -674,58 +674,58 @@ folder_Modify() {
                     echo "ERROR: Unable to update group."
                 fi
                 ;;
-	     3)
-    		clear
-   		echo "Current Permissions: $(ls -ld "$folder_path" | awk '{print $1}')"
-    		echo "----------------------------------------------------------"
-    		echo "Select new permissions for the folder:"
-    		echo
+3)
+    clear
+    echo "Current Permissions: $(ls -ld "$folder_path" | awk '{print $1}')"
+    echo "----------------------------------------------------------"
+    echo "Select new permissions for the folder:"
+    echo
 
-    		# Funktion för att välja behörigheter (read, write, execute)
-    		set_permissions() {
-        		echo "1. Read, Write, Execute (Full access)"
-        		echo "2. Read, Write (Modify but not execute)"
-        		echo "3. Read Only"
-        		echo "4. No Permissions"
-        		echo "----------------------------------------------------------"
-        		read -p "Enter your choice [1-4]: " choice
+    # Funktion för att välja behörigheter (read, write, execute)
+    set_permissions() {
+        echo "1. Read, Write, Execute (Full access)"
+        echo "2. Read, Write (Modify but not execute)"
+        echo "3. Read Only"
+        echo "4. No Permissions"
+        echo "----------------------------------------------------------"
+        read -p "Enter your choice [1-4]: " choice
 
-        		case $choice in
-            		1) echo "rwx" ;;  # Fullständig åtkomst
-            		2) echo "rw-" ;;  # Läsa och skriva
-            		3) echo "r--" ;;  # Endast läsa
-            		4) echo "---" ;;  # Ingen åtkomst
-            		*) echo "---" ;;  # Standard till ingen åtkomst
-       		 	esac
-    			}
+        case $choice in
+            1) echo "rwx" ;;  # Fullständig åtkomst
+            2) echo "rw-" ;;  # Läsa och skriva
+            3) echo "r--" ;;  # Endast läsa
+            4) echo "---" ;;  # Ingen åtkomst
+            *) echo "---" ;;  # Default to ingen åtkomst
+        esac
+    }
 
-    		echo "Set permissions for:"
-    		echo
+    echo "Set permissions for:"
+    echo
 
-    		# Välj för ägare
-    		echo "Owner:"
-    		owner_perms=$(set_permissions)
-    		echo
+    # Välj för ägare
+    echo "Owner:"
+    owner_perms=$(set_permissions)
+    echo
 
-    		# Välj för grupp
-    		echo "Group:"
-    		group_perms=$(set_permissions)
-    		echo
+    # Välj för grupp
+    echo "Group:"
+    group_perms=$(set_permissions)
+    echo
 
-    		# Välj för andra
-    		echo "Others:"
-    		other_perms=$(set_permissions)
+    # Välj för andra
+    echo "Others:"
+    other_perms=$(set_permissions)
 
-    		# Bygg rättighetssträngen
-    		full_permissions="u=$owner_perms,g=$group_perms,o=$other_perms"
+    # Bygg rättighetssträngen
+    full_permissions="u=$owner_perms,g=$group_perms,o=$other_perms"
 
-    		# Applicera rättigheterna
-    		if chmod u="${owner_perms}" g="${group_perms}" o="${other_perms}" "$folder_path"; then
-        		echo "Permissions successfully updated to '$permissions'."
-    		else
-        		echo "ERROR: Unable to update permissions."
-    		fi
-    		;;
+    # Applicera rättigheterna
+    if chmod "$full_permissions" "$folder_path"; then
+        echo "Permissions successfully updated to '$full_permissions'."
+    else
+        echo "ERROR: Unable to update permissions."
+    fi
+    ;;
             4)
                 clear
                 read -p "Enter the new permissions (e.g., 755): " permissions
