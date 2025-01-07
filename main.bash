@@ -717,7 +717,7 @@ folder_Modify() {
     		other_perms=$(set_permissions)
 
     		# Bygg rättighetssträngen
-    		full_permissions="$owner_perms$group_perms$other_perms"
+    		full_permissions="u=$owner_perms,g=$group_perms,o=$other_perms"
 
     		# Applicera rättigheterna
     		if chmod u="${owner_perms}" g="${group_perms}" o="${other_perms}" "$folder_path"; then
