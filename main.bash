@@ -683,11 +683,6 @@ folder_Modify() {
 
     # Function to get permission input from the user
     set_permissions() {
-        echo "1. Read, Write, Execute (Full access)"
-        echo "2. Read, Write (Modify but not execute)"
-        echo "3. Read Only"
-        echo "4. No Permissions"
-        echo "----------------------------------------------------------"
         read -p "Enter your choice [1-4]: " choice
 
         case $choice in
