@@ -15,6 +15,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Funktion that shows the main menu
+show_Main_Menu(){
 	clear
 	echo "=========================================================="
 	echo "	SYSTEM MANAGER (version 1.0.0) "
