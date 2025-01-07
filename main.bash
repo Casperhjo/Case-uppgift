@@ -681,7 +681,7 @@ folder_Modify() {
     echo "Select new permissions for the folder:"
     echo
 
-    # Function to get permission input from the user
+    # Funktion för att välja behörigheter (read, write, execute)
     set_permissions() {
         echo "1. Read, Write, Execute (Full access)"
         echo "2. Read, Write (Modify but not execute)"
@@ -691,34 +691,36 @@ folder_Modify() {
         read -p "Enter your choice [1-4]: " choice
 
         case $choice in
-            1) echo "rwx" ;;  # Full access
-            2) echo "rw-" ;;  # Read and write
-            3) echo "r--" ;;  # Read-only
-            4) echo "---" ;;  # No access
-            *) echo "---" ;;  # Default to no access
+            1) echo "rwx" ;;  # Fullständig åtkomst
+            2) echo "rw-" ;;  # Läsa och skriva
+            3) echo "r--" ;;  # Endast läsa
+            4) echo "---" ;;  # Ingen åtkomst
+            *) echo "---" ;;  # Standard till ingen åtkomst
         esac
     }
 
     echo "Set permissions for:"
     echo
 
-    # Get permissions for the owner
+    # Välj för ägare
     echo "Owner:"
     owner_perms=$(set_permissions)
     echo
 
-    # Get permissions for the group
+    # Välj för grupp
     echo "Group:"
     group_perms=$(set_permissions)
     echo
 
-    # Get permissions for others
+    # Välj för andra
     echo "Others:"
     other_perms=$(set_permissions)
 
     # Bygg rättighetssträngen
     chmod_string="${owner_perms:0:1}${group_perms:0:1}${other_perms:0:1}"
     chmod_octal=$(printf "%d" "'$(( (owner_perms:0:3 | group_perms:0:3 | other_perms :)))
+## Conversion will be cleaner-execution)<<matcountb40""
+
             4)
                 clear
                 read -p "Enter the new permissions (e.g., 755): " permissions
