@@ -748,7 +748,7 @@ folder_Modify() {
         if [[ $? -eq 0 ]]; then
             # Kontrollera om Sticky Bit är satt (antingen liten eller stor 't')
             permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:8:1}" == "t" || "${permissions:8:1}" == "T" ]]; then
+            if [[ "${permissions:9:1}" == "t" || "${permissions:9:1}" == "T" ]]; then
                 echo "Sticky Bit set."
             else
                 echo "ERROR: Sticky Bit not set as expected."
@@ -761,7 +761,7 @@ folder_Modify() {
         if [[ $? -eq 0 ]]; then
             # Kontrollera om Sticky Bit är borttaget
             permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:8:1}" != "t" || "${permissions:8:1}" != "T" ]]; then
+            if [[ "${permissions:9:1}" != "t" || "${permissions:9:1}" != "T" ]]; then
                 echo "Sticky Bit removed."
             else
                 echo "ERROR: Sticky Bit not removed as expected."
@@ -785,7 +785,7 @@ folder_Modify() {
         if [[ $? -eq 0 ]]; then
             # Kontrollera om Setgid är satt (antingen liten eller stor 's')
             permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:5:1}" == "s" || "${permissions:5:1}" == "S" ]]; then
+            if [[ "${permissions:6:1}" == "s" || "${permissions:6:1}" == "S" ]]; then
                 echo "Setgid set."
             else
                 echo "ERROR: Setgid not set as expected."
@@ -798,7 +798,7 @@ folder_Modify() {
         if [[ $? -eq 0 ]]; then
             # Kontrollera om Setgid är borttaget
             permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:5:1}" != "s" || "${permissions:5:1}" != "S" ]]; then
+            if [[ "${permissions:6:1}" != "s" || "${permissions:6:1}" != "S" ]]; then
                 echo "Setgid removed."
             else
                 echo "ERROR: Setgid not removed as expected."
