@@ -370,50 +370,49 @@ group_List(){
     	read -p "Press enter to return to the menu..." enter
 }
 
-#Funktion för att lista användare i en grupp
 group_View(){
-	clear
-    	echo "=========================================================="
-   	echo "          SYSTEM MANAGER (version 1.0.0)"
-   	echo "             Users in a Specific Group"
-   	echo "----------------------------------------------------------"
-     	echo
+    clear
+    echo "=========================================================="
+    echo "          SYSTEM MANAGER (version 1.0.0)"
+    echo "             Users in a Specific Group"
+    echo "----------------------------------------------------------"
+    echo
 
-	# Be användaren om ett grupp namn
- 	read -p "Enter the group name: " groupname
+    # Be användaren om ett gruppnamn
+    read -p "Enter the group name: " groupname
 
-  	# Kontrollera om gruppen finns
-   	if ! getent group "$groupname" &>/dev/null; then
-    		echo "The group '$groupname' does not exist."
-      		echo "----------------------------------------------------------"
-		read -p "Press enter to return to the menu..." enter
-  		return
-    	fi
+    # Kontrollera om gruppen finns
+    if ! getent group "$groupname" &>/dev/null; then
+        echo "The group '$groupname' does not exist."
+        echo "----------------------------------------------------------"
+        read -p "Press enter to return to the menu..." enter
+        return
+    fi
 
-     	# Hämta GID för gruppen
-      	group_gid=$(getent group "groupname" | cut -d: -f3)
+    # Hämta GID för gruppen
+    group_gid=$(getent group "$groupname" | cut -d: -f3)
 
-	# Lista användare med gruppen som primär grupp (från /etc/passwd)
- 	primary_users=$(awk -F: -v gid="$group_gid" '$4 == gid {print $1}' /etc/passwd)
+    # Lista användare med gruppen som primärgrupp (från /etc/passwd)
+    primary_users=$(awk -F: -v gid="$group_gid" '$4 == gid {print $1}' /etc/passwd)
 
-  	# Lista användare som är medlemmar i gruppen (från /etc/group)
-   	secondary_users=$(getent group "$groupname" | awk -F: '{print $4}' | tr ',' '\n')
+    # Lista användare som är medlemmar i gruppen (från /etc/group)
+    secondary_users=$(getent group "$groupname" | awk -F: '{print $4}' | tr ',' '\n')
 
-    	echo "Users in group '$groupname':"
-     	echo
-      	echo "Primary group members:"
-       	if [[ -n "primary_users" ]]; then
-		echo "$primary_users"
-  	else
-   		echo  "None"
-     	fi
-      	echo
-       	echo "Secondary group members:"
-	if [[ -n "secondary_users" ]]; then
-        	echo "$secondary_users"
-   	 else
-        	echo "None"
-   	 fi
+    echo "Users in group '$groupname':"
+    echo
+    echo "Primary group members:"
+    if [[ -n "$primary_users" ]]; then
+        echo "$primary_users"
+    else
+        echo "None"
+    fi
+    echo
+    echo "Secondary group members:"
+    if [[ -n "$secondary_users" ]]; then
+        echo "$secondary_users"
+    else
+        echo "None"
+    fi
 
     echo "----------------------------------------------------------"
     read -p "Press enter to return to the menu..." enter
