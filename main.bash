@@ -681,7 +681,7 @@ folder_Modify() {
     echo "Select new permissions for the folder:"
     echo
 
-    # Funktion för att välja behörigheter (read, write, execute)
+    # Function to get permission input from the user
     set_permissions() {
         echo "1. Read, Write, Execute (Full access)"
         echo "2. Read, Write (Modify but not execute)"
@@ -691,36 +691,36 @@ folder_Modify() {
         read -p "Enter your choice [1-4]: " choice
 
         case $choice in
-            1) echo "rwx" ;;  # Fullständig åtkomst
-            2) echo "rw-" ;;  # Läsa och skriva
-            3) echo "r--" ;;  # Endast läsa
-            4) echo "---" ;;  # Ingen åtkomst
-            *) echo "---" ;;  # Default to ingen åtkomst
+            1) echo "rwx" ;;  # Full access
+            2) echo "rw-" ;;  # Read and write
+            3) echo "r--" ;;  # Read-only
+            4) echo "---" ;;  # No access
+            *) echo "---" ;;  # Default to no access
         esac
     }
 
     echo "Set permissions for:"
     echo
 
-    # Välj för ägare
+    # Get permissions for the owner
     echo "Owner:"
     owner_perms=$(set_permissions)
     echo
 
-    # Välj för grupp
+    # Get permissions for the group
     echo "Group:"
     group_perms=$(set_permissions)
     echo
 
-    # Välj för andra
+    # Get permissions for others
     echo "Others:"
     other_perms=$(set_permissions)
 
-    # Bygg rättighetssträngen
+    # Build the permission string
     full_permissions="u=$owner_perms,g=$group_perms,o=$other_perms"
 
-    # Applicera rättigheterna
-    if chmod "$full_permissions" "$folder_path"; then
+    # Apply the permissions using chmod
+    if sudo chmod "$full_permissions" "$folder_path"; then
         echo "Permissions successfully updated to '$full_permissions'."
     else
         echo "ERROR: Unable to update permissions."
