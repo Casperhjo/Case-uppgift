@@ -112,7 +112,7 @@ user_Add(){
 
     	# Create the user
      	if [[ -z $comment ]]; then
-      		useradd -m "$username" # Creates a user with a home directory
+      		useradd -m -s /bin/bash "$username" # Skapar en user med hemkatalog och skal
 	else
  		useradd -m -c "$comment" "$username" # Creates a user with a comment
    	fi
