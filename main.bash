@@ -15,7 +15,6 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Funktion that shows the main menu
-show_Main_Menu() {
 	clear
 	echo "=========================================================="
 	echo "	SYSTEM MANAGER (version 1.0.0) "
@@ -23,27 +22,27 @@ show_Main_Menu() {
 	echo
 	echo "ci - Computer Info	(Computer information)"
  	echo 
-  	echo "ua - User Add		(Create a new user)"
-   	echo "ul - User List 		(List all login users)"
-    	echo "uv - User View		(View user properties)"
-     	echo "um - User Modify		(Modify user properties)"
-      	echo "ud - User Delete		(Delete a login user)"
+  	printf "%-18s %s\n" "ua - User Add		(Create a new user)"
+   	printf "%-18s %s\n" "ul - User List 		(List all login users)"
+    	printf "%-18s %s\n" "uv - User View		(View user properties)"
+     	printf "%-18s %s\n" "um - User Modify		(Modify user properties)"
+      	printf "%-18s %s\n" "ud - User Delete		(Delete a login user)"
        	echo
 	echo
- 	echo "ga - Group Add		(Create a new group)"
-  	echo "gl - Group List		(List all groups, not system groups)"
-   	echo "gv - Group View		(List all users in a group)"
-    	echo "gm - Group Modify		(Add/remove user to/from a group)"
-     	echo "gd - Group Delete		(Delete a group, not system groups)"
+ 	printf "%-18s %s\n" "ga - Group Add		(Create a new group)"
+  	printf "%-18s %s\n" "gl - Group List		(List all groups, not system groups)"
+   	printf "%-18s %s\n" "gv - Group View		(List all users in a group)"
+    	printf "%-18s %s\n" "gm - Group Modify		(Add/remove user to/from a group)"
+     	printf "%-18s %s\n" "gd - Group Delete		(Delete a group, not system groups)"
 	echo
  	echo
-  	echo "fa - Folder Add		(create a new folder)"
-   	echo "fl - Folder list		(view content in a folder)"
-    	echo "fv - Folder View		(View folder properteis)"
-     	echo "fm - Folder Modify	(modify folder properties)"
-      	echo "fd - Folder Delete	(Delete a folder)"
+  	printf "%-18s %s\n" "fa - Folder Add		(create a new folder)"
+   	printf "%-18s %s\n" "fl - Folder list		(view content in a folder)"
+    	printf "%-18s %s\n" "fv - Folder View		(View folder properteis)"
+     	printf "%-18s %s\n" "fm - Folder Modify	(modify folder properties)"
+      	printf "%-18s %s\n" "fd - Folder Delete	(Delete a folder)"
 	echo
-	echo "X - Exit the system manager"
+	printf "%-18s %s\n" "X - Exit the system manager"
 	echo "----------------------------------------------------------"
 	echo
 	read -p "Choice: " choice
