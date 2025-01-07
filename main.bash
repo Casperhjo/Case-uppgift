@@ -781,23 +781,6 @@ folder_Modify() {
     echo "----------------------------------------------------------"
     read -p "Press enter to return to the menu..." enter
 }
-# Funktion för att välja rättigheter
-select_permissions() {
-    echo "1. Read, Write, Execute"
-    echo "2. Read, Write"
-    echo "3. Read Only"
-    echo "4. No Permissions"
-    echo "----------------------------------------------------------"
-    read -p "Enter your choice [1-4]: " choice
-
-    case $choice in
-        1) echo "7" ;;  # rwx
-        2) echo "6" ;;  # rw-
-        3) echo "4" ;;  # r--
-        4) echo "0" ;;  # ---
-        *) echo "0" ;;  # Default to no permissions
-    esac
-}
 # Funktion för att översätta rättigheter
 translate_permissions() {
     local perms=$1
