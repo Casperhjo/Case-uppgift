@@ -946,7 +946,7 @@ folder_Delete() {
 
     #Kollar att mappen existerar
     if [ -d "$folder_path" ]; then
-        rm -r "$folder_path"
+        sudo rm -r "$folder_path"
         echo "The folder '$folder_path' has been deleted."
     else
         echo "The folder does not exist."
