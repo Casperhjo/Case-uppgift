@@ -265,32 +265,32 @@ user_Modify() {
 	    fi
 	;;
     
-    2) 
-	   	read -p "Enter the new user id: " user_id
+    	2) 
+		read -p "Enter the new user id: " user_id
 		if [[ "$user_id" -gt 1000 ]]; then
-	    	sudo usermod -u "$user_id" "$username" &>/dev/null
-	    	if [ $? -eq 0 ]; then
+	    		sudo usermod -u "$user_id" "$username" &>/dev/null
+	    		if [ $? -eq 0 ]; then
   				echo "Your user id has been changed to $user_id"
-	    	else
+	    		else
   				echo "You cannot have this user id"
-	    	fi
+	    		fi
 		else
  			echo "This User ID is already taken"
  		fi
 	;;
 	    
-    3)
-	    read -p "Enter the new group id: " group_id
+    	3)
+		read -p "Enter the new group id: " group_id
 		if [[ "$group_id" -gt 1000 ]]; then
-	    	sudo usermod -g "$group_id" "$username" &>/dev/null
-            if [ $? -eq 0 ]; then
-  				echo "The group ID has been changed"
-            else
-  				echo "You cannot have this group ID"
-            fi    
-		else
- 			echo "The group ID has to be above 1000"
-   		fi
+	    		sudo usermod -g "$group_id" "$username" &>/dev/null
+            			if [ $? -eq 0 ]; then
+  					echo "The group ID has been changed"
+            			else
+  					echo "You cannot have this group ID"
+            			fi    
+			else
+ 				echo "The group ID has to be above 1000"
+   			fi
 	;;
 	
  	4)
