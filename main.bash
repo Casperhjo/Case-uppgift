@@ -25,45 +25,46 @@ show_Main_Menu(){
  	echo 
   	printf "%-18s %s\n" "ua - User Add		(Create a new user)"
    	printf "%-18s %s\n" "ul - User List 		(List all login users)"
-    	printf "%-18s %s\n" "uv - User View		(View user properties)"
-     	printf "%-18s %s\n" "um - User Modify		(Modify user properties)"
-      	printf "%-18s %s\n" "ud - User Delete		(Delete a login user)"
-       	echo
+    printf "%-18s %s\n" "uv - User View		(View user properties)"
+	printf "%-18s %s\n" "um - User Modify		(Modify user properties)"
+    printf "%-18s %s\n" "ud - User Delete		(Delete a login user)"
+    echo
 	echo
  	printf "%-18s %s\n" "ga - Group Add		(Create a new group)"
   	printf "%-18s %s\n" "gl - Group List		(List all groups, not system groups)"
    	printf "%-18s %s\n" "gv - Group View		(List all users in a group)"
-    	printf "%-18s %s\n" "gm - Group Modify		(Add/remove user to/from a group)"
-     	printf "%-18s %s\n" "gd - Group Delete		(Delete a group, not system groups)"
+    printf "%-18s %s\n" "gm - Group Modify		(Add/remove user to/from a group)"
+    printf "%-18s %s\n" "gd - Group Delete		(Delete a group, not system groups)"
 	echo
  	echo
   	printf "%-18s %s\n" "fa - Folder Add		(create a new folder)"
    	printf "%-18s %s\n" "fl - Folder list		(view content in a folder)"
-    	printf "%-18s %s\n" "fv - Folder View		(View folder properteis)"
-     	printf "%-18s %s\n" "fm - Folder Modify	(modify folder properties)"
-      	printf "%-18s %s\n" "fd - Folder Delete	(Delete a folder)"
+    printf "%-18s %s\n" "fv - Folder View		(View folder properteis)"
+    printf "%-18s %s\n" "fm - Folder Modify	(modify folder properties)"
+    printf "%-18s %s\n" "fd - Folder Delete	(Delete a folder)"
 	echo
 	printf "%-18s %s\n" "X - Exit the system manager"
 	echo "----------------------------------------------------------"
 	echo
+ 
 	read -p "Choice: " choice
-	case $choice in
+ 	case $choice in
 		ci) computer_Info ;; 	# Call the funtion to display computer info
   		ua) user_Add ;; 	# Call the funktion for creating a user
-    		ul) user_List;;		# Calls the funktion to list all users that can log in byt not system
+    	ul) user_List;;		# Calls the funktion to list all users that can log in byt not system
 		uv) user_View;;         # kallar på funktionen som vissar all information som finns med i /etc/passwd och vilka grupper en användare tillhör
   		um) user_Modify;;	# kallar en funktion som låter användaren ändra user properties
-    		ud) user_Delete;;	# Kallar en funktion som tar bort en användare
-      		ga) group_Add;;		# kallar en funktion som låter användaren skapa en ny grupp
+    	ud) user_Delete;;	# Kallar en funktion som tar bort en användare
+      	ga) group_Add;;		# kallar en funktion som låter användaren skapa en ny grupp
 		gl) group_List ;;	# kallar en funktion som listar alla GID >= 1000
   		gv) group_View ;;	# kallar en funktion som låter användaren kolla vilka användare som är med i en grupp
-    		gm) group_Modify;;	# låter användaren lägga till eller ta bort användare i en grupp
-      		gd) group_Delete;; 	#  låter användaren välja en grupp att ta bort
-      		fa) folder_Add ;;	# kallar en funktion som låter användaren att lägga till en folder
+    	gm) group_Modify;;	# låter användaren lägga till eller ta bort användare i en grupp
+      	gd) group_Delete;; 	#  låter användaren välja en grupp att ta bort
+      	fa) folder_Add ;;	# kallar en funktion som låter användaren att lägga till en folder
 		fl) folder_List ;;	# kallar en funktion som visar alla folders i ett directory
   		fv) folder_View ;;	# 
-    		fm) folder_Modify ;;			# Placeholder for modifying folder properties
-      		fd) folder_Delete ;;			# Placeholder for deleting a folder
+    	fm) folder_Modify ;;			# Placeholder for modifying folder properties
+      	fd) folder_Delete ;;			# Placeholder for deleting a folder
 		X) exit_Script ;;
 		*) echo "Invalid choice, try again."; sleep 2 ;;
 	esac
@@ -103,16 +104,16 @@ user_Add(){
 
   	# Cheack if the user already exists
    	if id "$username" &>/dev/null; then
-    		echo "Error: The user '$username' already exists."
-      		read -p "Press enter to return to the menu..." enter
+    	echo "Error: The user '$username' already exists."
+      	read -p "Press enter to return to the menu..." enter
 		return
   	fi
 
-   	read -p "Enter a comment (e.g., full name) for the user [optional]: " comment 
+	read -p "Enter a comment (e.g., full name) for the user [optional]: " comment 
 
-    	# Create the user
-     	if [[ -z $comment ]]; then
-      		useradd -m -s /bin/bash "$username" # Skapar en user med hemkatalog och skal
+    # Create the user
+    if [[ -z $comment ]]; then
+		useradd -m -s /bin/bash "$username" # Skapar en user med hemkatalog och skal
 	else
  		useradd -m -c "$comment" "$username" # Creates a user with a comment
    	fi
@@ -122,14 +123,14 @@ user_Add(){
 		echo "The user '$username' has been created successfully."
         
   		# Prompt to set a password for the new user
-    	   	passwd "$username"
-    		if [[ $? -eq 0 ]]; then 
-      			echo "Password has been set for user '$username'."
-     		else
-      			echo "Error: Failed to set password for user '$username'."
-     		fi
+    	passwd "$username"
+    	if [[ $? -eq 0 ]]; then 
+      		echo "Password has been set for user '$username'."
+     	else
+      		echo "Error: Failed to set password for user '$username'."
+     	fi
 	else
-     		echo "Error: Failed to create the user '$username'."
+		echo "Error: Failed to create the user '$username'."
    	fi
 
   	read -p "Press enter to return to the menu... " enter
@@ -170,8 +171,8 @@ user_View(){
 		echo "The user '$username' does not exist."
   		echo "----------------------------------------------------------"
   		read -p "Press enter to return to the menu..." enter
-    		return
-        fi
+    	return
+    fi
 
  	# Hämta användarens information från /etc/passwd
   	user_info=$(getent passwd "$username")
@@ -184,9 +185,9 @@ user_View(){
  	printf "%-18s: %s\n" "User" "$uname"
   	printf "%-18s: %s\n" "Password" "$passwd"
    	printf "%-18s: %s\n" "User ID" "$uid"
-    	printf "%-18s: %s\n" "Group ID" "$gid"
-      	printf "%-18s: %s\n" "Comment" "$comment"
-        printf "%-18s: %s\n" "Directory" "$home"
+    printf "%-18s: %s\n" "Group ID" "$gid"
+    printf "%-18s: %s\n" "Comment" "$comment"
+	printf "%-18s: %s\n" "Directory" "$home"
 	printf "%-18s: %s\n" "Shell" "$shell"
 	echo
 
@@ -194,7 +195,7 @@ user_View(){
       	
   	echo "----------------------------------------------------------"
    	echo
-    	read -p "Press Enter to return to the menu... " enter
+    read -p "Press Enter to return to the menu... " enter
 }
 
 #Funktion för att modifiera en användare
@@ -244,91 +245,94 @@ user_Modify() {
     
     read -p "Choice [1-8]: " choice
 
-    case $choice in
+	case $choice in
 	1) 
  	    read -p "Enter the new username: " new_username
 	    sudo usermod -l "$new_username" "$username" &>/dev/null
      
 	    if [ $? -eq 0 ]; then
-  		echo "Your username has been changed"
+  			echo "Your username has been changed"
 	    else
-  		echo "ERROR: You cannot have this username."
+  			echo "ERROR: You cannot have this username."
 	    fi
-	    ;;
+	;;
     
-        2) 
-	    read -p "Enter the new user id: " user_id
-	if [[ "$user_id" -gt 1000 ]]; then
-	    sudo usermod -u "$user_id" "$username" &>/dev/null
-	    if [ $? -eq 0 ]; then
-  		echo "Your user id has been changed to $user_id"
-	    else
-  		echo "You cannot have this user id"
-	    fi
-	else
- 		echo "This User ID is already taken"
- 	fi
-        ;;
+    2) 
+	   	read -p "Enter the new user id: " user_id
+		if [[ "$user_id" -gt 1000 ]]; then
+	    	sudo usermod -u "$user_id" "$username" &>/dev/null
+	    	if [ $? -eq 0 ]; then
+  				echo "Your user id has been changed to $user_id"
+	    	else
+  				echo "You cannot have this user id"
+	    	fi
+		else
+ 			echo "This User ID is already taken"
+ 		fi
+	;;
 	    
-
-        3)
+    3)
 	    read -p "Enter the new group id: " group_id
-	if [[ "$group_id" -gt 1000 ]]; then
-	    sudo usermod -g "$group_id" "$username" &>/dev/null
+		if [[ "$group_id" -gt 1000 ]]; then
+	    	sudo usermod -g "$group_id" "$username" &>/dev/null
             if [ $? -eq 0 ]; then
-  		echo "The group ID has been changed"
+  				echo "The group ID has been changed"
             else
-  		echo "You cannot have this group ID"
+  				echo "You cannot have this group ID"
             fi    
-	else
- 		echo "The group ID has to be above 1000"
-   	fi
+		else
+ 			echo "The group ID has to be above 1000"
+   		fi
 	;;
 	
  	4)
-            read -p "Enter new comment: " new_comment
-            sudo usermod -c "$new_comment" "$username"
-            if [[ $? -eq 0 ]]; then
-                echo "Comment updated successfully for user '$username'."
-            else
-                echo "Failed to update comment for user '$username'."
-            fi
-            ;;
-        5)
-            read -p "Enter new home directory (full path): " new_home
-            sudo usermod -d "$new_home" -m "$username"  # -m flyttar filer till den nya katalogen
-            if [[ $? -eq 0 ]]; then
-                echo "Home directory updated successfully for user '$username'."
-            else
-                echo "Failed to update home directory for user '$username'."
-            fi
-            ;;
-        6)
-            read -p "Enter new shell (e.g., /bin/bash): " new_shell
-            sudo usermod -s "$new_shell" "$username"
-            if [[ $? -eq 0 ]]; then
-                echo "Shell updated successfully for user '$username'."
-            else
-                echo "Failed to update shell for user '$username'."
-            fi
-            ;;
-        7)
+        read -p "Enter new comment: " new_comment
+        sudo usermod -c "$new_comment" "$username"
+        if [[ $? -eq 0 ]]; then
+            echo "Comment updated successfully for user '$username'."
+        else
+            echo "Failed to update comment for user '$username'."
+        fi
+    ;;
 	
-	    echo "Changing password for user '$username'..."
-            sudo passwd "$username"
-            if [[ $? -eq 0 ]]; then
-                echo "Password updated successfully for user '$username'."
-            else
-                echo "Failed to update password for user '$username'."
-            fi
-            ;;
-        8)
-            echo "Modification canceled."
-            ;;
-        *)
-            echo "Invalid choice. Returning to the menu."
-            ;;
+    5)
+        read -p "Enter new home directory (full path): " new_home
+        sudo usermod -d "$new_home" -m "$username"  # -m flyttar filer till den nya katalogen
+        if [[ $? -eq 0 ]]; then
+        	echo "Home directory updated successfully for user '$username'."
+        else
+            echo "Failed to update home directory for user '$username'."
+        fi
+    ;;
+    6)
+        read -p "Enter new shell (e.g., /bin/bash): " new_shell
+        sudo usermod -s "$new_shell" "$username"
+        if [[ $? -eq 0 ]]; then
+            echo "Shell updated successfully for user '$username'."
+        else
+            echo "Failed to update shell for user '$username'."
+        fi
+    ;;
+	
+    7)
+		echo "Changing password for user '$username'..."
+        sudo passwd "$username"
+        if [[ $? -eq 0 ]]; then
+            echo "Password updated successfully for user '$username'."
+        else
+            echo "Failed to update password for user '$username'."
+        fi
+    ;;
+	
+    8)
+        echo "Modification canceled."
+    ;;
+	
+    *)
+        echo "Invalid choice. Returning to the menu."
+    ;;
     esac
+	
     echo "----------------------------------------------------------"
     read -p "Press enter to return to the menu..." enter
 }
@@ -405,15 +409,15 @@ group_List(){
     	echo "=========================================================="
   	echo "          SYSTEM MANAGER (version 1.0.0)"
    	echo "             List of Non-System Groups"
-    	echo "----------------------------------------------------------"
+    echo "--------------------------------------------------------------"
    	echo 	
 
-    	#Lista alla grupper med GID >=1000
-     	awk -F: '$3 >= 1000 {printf "%-20s %-10s\n", $1, $3}' /etc/group
+    #Lista alla grupper med GID >=1000
+    awk -F: '$3 >= 1000 {printf "%-20s %-10s\n", $1, $3}' /etc/group
 
-       	echo
-	echo "----------------------------------------------------------"
-    	read -p "Press enter to return to the menu..." enter
+    echo
+	echo "---------------------------------------------------------------"
+    read -p "Press enter to return to the menu..." enter
 }
 
 group_View(){
@@ -467,71 +471,75 @@ group_View(){
 #Funktion för att ta bort eller lägga till en användare i en grupp
 group_Modify(){
 	clear
-    	echo "=========================================================="
+    echo "=========================================================="
    	echo "          SYSTEM MANAGER (version 1.0.0)"
    	echo "            Add or remove a user from group"
    	echo "----------------------------------------------------------"
-     	echo
+    echo
 
-      	# Be användaren om ett grupp namn
+    # Be användaren om ett grupp namn
  	read -p "Enter the group name: " groupname
 
   	# Kontrollera om gruppen finns
    	if ! getent group "$groupname" &>/dev/null; then
-    		echo "The group '$groupname' does not exist."
-      		echo "----------------------------------------------------------"
+    	echo "The group '$groupname' does not exist."
+      	echo "----------------------------------------------------------"
 		read -p "Press enter to return to the menu..." enter
   		return
-    	fi
+    fi
 
 	# Alternativ för att lägga till eller ta bort användare
  	echo "What would you like to do?"
   	echo "1. add a user to the group"
    	echo "2. Remove a user from the group"
-    	echo "3. Cancel"
-     	read -p "Choice [1-3]: " choice
+    echo "3. Cancel"
+    read -p "Choice [1-3]: " choice
 
-      	case $choice in 
-       		1)
-	 		# Lägg till en användare
-    			read -p "Enter the username to add: " username
-       			if id "$username" &>/dev/null; then
-	  			sudo usermod -aG "$groupname" "$username"
-      				if [[ $? -eq 0 ]]; then
-	  				echo "User '$username' has been added to group '$groupname'."
-       				else
-	   				echo "Failed to add user '$username' to group "$groupname"."
-				fi
-    			else
-       				echo "The user '$username' does not exist."
-	   		fi
-      			;;
-	 	 2)
-     			#ta bort en användare
-			read -p "Enter the username to remove: " username
-   			if id "$username" &>/dev/null; then
-      				current_groups=$(id -nG "$username" | tr ' ' ',')
-	  			updated_groups=$(echo "$current_groups" | sed "s/\b$groupname\b//g" | sed 's/,,/,/g' | sed 's/^,//' | sed 's/,$//') # tar bort gruppen, tar bort överflödiga , tecken. tar bort , tecken i början och slutet
-               			sudo usermod -G "$updated_groups" "$username"
-                		if [[ $? -eq 0 ]]; then
-                    			echo "User '$username' has been removed from group '$groupname'."
-                		else
-                    			echo "Failed to remove user '$username' from group '$groupname'."
-                		fi
-            		else
-               			echo "The user '$username' does not exist."
-            		fi
-            		;;
-        	3)
-            		echo "Modification canceled."
-            		;;
-        	*)
-            		echo "Invalid choice. Returning to the menu."
-            		;;
-    	esac
-
-   		echo "----------------------------------------------------------"
-    		read -p "Press enter to return to the menu..." enter
+    case $choice in 
+	1)
+		# Lägg till en användare
+		read -p "Enter the username to add: " username
+       	if id "$username" &>/dev/null; then
+			sudo usermod -aG "$groupname" "$username"
+      		if [[ $? -eq 0 ]]; then
+	  			echo "User '$username' has been added to group '$groupname'."
+       		else
+	   			echo "Failed to add user '$username' to group "$groupname"."
+			fi
+    	else
+       		echo "The user '$username' does not exist."
+	   	fi
+	;;
+ 
+ 	2)
+		#ta bort en användare
+		read -p "Enter the username to remove: " username
+   		if id "$username" &>/dev/null; then
+      		current_groups=$(id -nG "$username" | tr ' ' ',')
+	  		updated_groups=$(echo "$current_groups" | sed "s/\b$groupname\b//g" | sed 's/,,/,/g' | sed 's/^,//' | sed 's/,$//') # tar bort gruppen, tar bort överflödiga , tecken. tar bort , tecken i början och slutet
+            sudo usermod -G "$updated_groups" "$username"
+            if [[ $? -eq 0 ]]; then
+            	echo "User '$username' has been removed from group '$groupname'."
+            else
+            	echo "Failed to remove user '$username' from group '$groupname'."
+            fi
+        else
+        	echo "The user '$username' does not exist."
+        fi
+	;;
+ 
+  	3)
+    	echo "Modification canceled."
+    ;;
+	
+    *)
+    	echo "Invalid choice. Returning to the menu."
+    ;;
+	
+    esac
+	
+   	echo "----------------------------------------------------------"
+    read -p "Press enter to return to the menu..." enter
 }
 
 #Funktion för att ta bort en grupp
@@ -552,8 +560,9 @@ group_Delete(){
         read -p "Press enter to return to the menu..." enter
         return
     fi
-    
-        group_gid=$(getent group "$groupname" | cut -d: -f3)
+	
+    group_gid=$(getent group "$groupname" | cut -d: -f3)
+	
     if [[ "$group_gid" -lt 1000 ]]; then
     	echo "You can not remove that group"
      	read -p "Press enter to return to the menu..." enter
@@ -640,15 +649,17 @@ folder_View() {
         group=$(ls -ld "$folder_path" | awk '{print $4}')
         size=$(du -sh "$folder_path" | awk '{print $1}')
         last_modified=$(stat -c '%y' "$folder_path")
-	sticky_bit=$(stat -c '%A' "$folder_path" | grep -q '[tT]' && echo "On" || echo "Off")
-	setgid=$(stat -c '%A' "$folder_path" | grep -q '[sS]' && echo "On" || echo "Off")
+		sticky_bit=$(stat -c '%A' "$folder_path" | grep -q '[tT]' && echo "On" || echo "Off")
+		setgid=$(stat -c '%A' "$folder_path" | grep -q '[sS]' && echo "On" || echo "Off")
 
         # Visa attribut
         echo "Owner:           $owner"
         echo "Group:           $group"
         echo "Permissions: "
-	echo "$(translate_permissions "$permissions")"
+		echo
+		echo "$(translate_permissions "$permissions")"
         echo "Sticky Bit:      $sticky_bit"
+		echo
         echo "Setgid:          $setgid"
         echo "Size:            $size"
         echo "Last Modified:   $last_modified"
@@ -656,8 +667,7 @@ folder_View() {
     else
         echo "ERROR: Folder '$folder_path' does not exist."
     fi
-
-    echo "----------------------------------------------------------"
+	
     read -p "Press enter to return to the menu..." enter
 }
 
@@ -683,8 +693,8 @@ folder_Modify() {
         group=$(ls -ld "$folder_path" | awk '{print $4}')
         size=$(du -sh "$folder_path" | awk '{print $1}')
         last_modified=$(stat -c '%y' "$folder_path")
-	sticky_bit=$(stat -c '%A' "$folder_path" | grep -q '[tT]' && echo "On" || echo "Off")
-	setgid=$(stat -c '%A' "$folder_path" | grep -q '[sS]' && echo "On" || echo "Off")
+		sticky_bit=$(stat -c '%A' "$folder_path" | grep -q '[tT]' && echo "On" || echo "Off")
+		setgid=$(stat -c '%A' "$folder_path" | grep -q '[sS]' && echo "On" || echo "Off")
 
         # Visa attribut
         echo "Owner:           $owner"
@@ -709,7 +719,7 @@ folder_Modify() {
         read -p "Enter your choice [1-7]: " choice
 
         case $choice in
-            1)
+    		1)
                 clear
                 read -p "Enter the new owner (username): " owner
                 if sudo chown "$owner" "$folder_path"; then
@@ -718,6 +728,7 @@ folder_Modify() {
                     echo "ERROR: Unable to update owner."
                 fi
                 ;;
+				
             2)
                 clear
                 read -p "Enter the new group: " group
@@ -727,59 +738,63 @@ folder_Modify() {
                     echo "ERROR: Unable to update group."
                 fi
                 ;;
-3)
-    clear
-    echo "Current Permissions: $(ls -ld "$folder_path" | awk '{print $1}')"
-    echo "----------------------------------------------------------"
-    echo "Select new permissions for the folder:"
-    echo
+				
+            3)
+				clear
+    			echo "Current Permissions: $(ls -ld "$folder_path" | awk '{print $1}')"
+    			echo "----------------------------------------------------------"
+    			echo "Select new permissions for the folder:"
+    			echo
 
-    # Function to get permission input from the user
-    set_permissions() {
-        read -p "Enter your choice [1-4]: " choice
+    			# Function to get permission input from the user
+    			set_permissions() {
+        		read -p "Enter your choice [1-4]: " choice
 
-        case $choice in
-            1) echo "rwx" ;;  # Full access
-            2) echo "rw-" ;;  # Read and write
-            3) echo "r--" ;;  # Read-only
-            4) echo "---" ;;  # No access
-            *) echo "---" ;;  # Default to no access
-        esac
-    }
+        		case $choice in
+            		1) echo "rwx" ;;  # Full access
+            		2) echo "rw-" ;;  # Read and write
+            		3) echo "r--" ;;  # Read-only
+            		4) echo "---" ;;  # No access
+            		*) echo "---" ;;  # Default to no access
+       		 	esac
+    			}
 
-    echo "Set permissions for:"
-    echo
-    echo "1. Read, Write, Execute (Full acces)"
-    echo "2. Read, Write (Modify but not execute)"
-    echo "3. Read Only"
-    echo "4. No Permission"
-    echo "----------------------------------------------------------"
-    # Get permissions for the owner
-    echo "Owner:"
-    owner_perms=$(set_permissions)
-    echo
+    			echo "Set permissions for:"
+    			echo
+    			echo "1. Read, Write, Execute (Full acces)"
+    			echo "2. Read, Write (Modify but not execute)"
+    			echo "3. Read Only"
+    			echo "4. No Permission"
+    			echo "----------------------------------------------------------"
+	   
+    			# Get permissions for the owner
+    			echo "Owner:"
+    			owner_perms=$(set_permissions)
+			    echo
 
-    # Get permissions for the group
-    echo "Group:"
-    group_perms=$(set_permissions)
-    echo
+    			# Get permissions for the group
+    			echo "Group:"
+    			group_perms=$(set_permissions)
+    			echo
 
-    # Get permissions for others
-    echo "Others:"
-    other_perms=$(set_permissions)
+    			# Get permissions for others
+    			echo "Others:"
+    			other_perms=$(set_permissions)
 
-    # Apply the permissions using three separate chmod commands
-    if chmod "u=$owner_perms" "$folder_path" &&
-       chmod "g=$group_perms" "$folder_path" &&
-       chmod "o=$other_perms" "$folder_path"; then
-        echo "Permissions successfully updated to:"
-        echo "Owner: $owner_perms"
-        echo "Group: $group_perms"
-        echo "Others: $other_perms"
-    else
-        echo "ERROR: Unable to update permissions."
-    fi
-    ;;
+    			# Apply the permissions using three separate chmod commands
+					if chmod "u=$owner_perms" "$folder_path" &&
+	   				chmod "g=$group_perms" "$folder_path" &&
+       				chmod "o=$other_perms" "$folder_path"; then
+			
+        				echo "Permissions successfully updated to:"
+        				echo "Owner: $owner_perms"
+        				echo "Group: $group_perms"
+        				echo "Others: $other_perms"
+    				else
+        				echo "ERROR: Unable to update permissions."
+    				fi
+    		;;
+	  
             4)
                 clear
                 read -p "Enter the new permissions (e.g., 755): " permissions
@@ -788,95 +803,106 @@ folder_Modify() {
                 else
                     echo "ERROR: Unable to update permissions."
                 fi
-                ;;
-5)
-    clear
-    echo "Toggle Sticky Bit for the folder:"
-    echo "1. Set Sticky Bit"
-    echo "2. Remove Sticky Bit"
-    read -p "Enter your choice [1-2]: " sticky_choice
+            ;;
+			
+			5)
+    			clear
+    			echo "Toggle Sticky Bit for the folder:"
+    			echo "1. Set Sticky Bit"
+    			echo "2. Remove Sticky Bit"
+    			read -p "Enter your choice [1-2]: " sticky_choice
 
-    if [[ "$sticky_choice" -eq 1 ]]; then
-        sudo chmod +t "$folder_path"
-        if [[ $? -eq 0 ]]; then
-            # Kontrollera om Sticky Bit är satt (antingen liten eller stor 't')
-            permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:9:1}" == "t" || "${permissions:9:1}" == "T" ]]; then
-                echo "Sticky Bit set."
-            else
-                echo "ERROR: Sticky Bit not set as expected."
-            fi
-        else
-            echo "ERROR: Unable to set Sticky Bit."
-        fi
-    elif [[ "$sticky_choice" -eq 2 ]]; then
-        sudo chmod -t "$folder_path"
-        if [[ $? -eq 0 ]]; then
-            # Kontrollera om Sticky Bit är borttaget
-            permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:9:1}" != "t" || "${permissions:9:1}" != "T" ]]; then
-                echo "Sticky Bit removed."
-            else
-                echo "ERROR: Sticky Bit not removed as expected."
-            fi
-        else
-            echo "ERROR: Unable to remove Sticky Bit."
-        fi
-    else
-        echo "Invalid choice."
-    fi
-    ;;
-6)
-    clear
-    echo "Toggle Setgid for the folder:"
-    echo "1. Set Setgid"
-    echo "2. Remove Setgid"
-    read -p "Enter your choice [1-2]: " setgid_choice
+    			if [[ "$sticky_choice" -eq 1 ]]; then
+        			sudo chmod +t "$folder_path"
+        			if [[ $? -eq 0 ]]; then
+		   
+            			# Kontrollera om Sticky Bit är satt (antingen liten eller stor 't')
+            			permissions=$(stat -c '%A' "$folder_path")
+            			if [[ "${permissions:9:1}" == "t" || "${permissions:9:1}" == "T" ]]; then
+                			echo "Sticky Bit set."
+            			else
+                			echo "ERROR: Sticky Bit not set as expected."
+            			fi
+        			else
+            			echo "ERROR: Unable to set Sticky Bit."
+        			fi
+		   
+    				elif [[ "$sticky_choice" -eq 2 ]]; then
+        				sudo chmod -t "$folder_path"
+        				if [[ $? -eq 0 ]]; then
+			
+            				# Kontrollera om Sticky Bit är borttaget
+            				permissions=$(stat -c '%A' "$folder_path")
+            				if [[ "${permissions:9:1}" != "t" || "${permissions:9:1}" != "T" ]]; then
+                				echo "Sticky Bit removed."
+            				else
+                				echo "ERROR: Sticky Bit not removed as expected."
+            				fi
+        				else
+            				echo "ERROR: Unable to remove Sticky Bit."
+        				fi
+    				else
+        				echo "Invalid choice."
+    			fi
+    		;;
+	  
+			6)
+    			clear
+    			echo "Toggle Setgid for the folder:"
+    			echo "1. Set Setgid"
+    			echo "2. Remove Setgid"
+    			read -p "Enter your choice [1-2]: " setgid_choice
 
-    if [[ "$setgid_choice" -eq 1 ]]; then
-        sudo chmod g+s "$folder_path"
-        if [[ $? -eq 0 ]]; then
-            # Kontrollera om Setgid är satt (antingen liten eller stor 's')
-            permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:6:1}" == "s" || "${permissions:6:1}" == "S" ]]; then
-                echo "Setgid set."
-            else
-                echo "ERROR: Setgid not set as expected."
-            fi
-        else
-            echo "ERROR: Unable to set Setgid."
-        fi
-    elif [[ "$setgid_choice" -eq 2 ]]; then
-        sudo chmod g-s "$folder_path"
-        if [[ $? -eq 0 ]]; then
-            # Kontrollera om Setgid är borttaget
-            permissions=$(stat -c '%A' "$folder_path")
-            if [[ "${permissions:6:1}" != "s" || "${permissions:6:1}" != "S" ]]; then
-                echo "Setgid removed."
-            else
-                echo "ERROR: Setgid not removed as expected."
-            fi
-        else
-            echo "ERROR: Unable to remove Setgid."
-        fi
-    else
-        echo "Invalid choice."
-    fi
-    ;;
+    			if [[ "$setgid_choice" -eq 1 ]]; then
+        			sudo chmod g+s "$folder_path"
+        			if [[ $? -eq 0 ]]; then
+		   
+            			# Kontrollera om Setgid är satt (antingen liten eller stor 's')
+            			permissions=$(stat -c '%A' "$folder_path")
+            			if [[ "${permissions:6:1}" == "s" || "${permissions:6:1}" == "S" ]]; then
+                			echo "Setgid set."
+            			else
+                			echo "ERROR: Setgid not set as expected."
+            			fi
+        			else
+            			echo "ERROR: Unable to set Setgid."
+        			fi
+		   
+    			elif [[ "$setgid_choice" -eq 2 ]]; then
+        			sudo chmod g-s "$folder_path"
+        			if [[ $? -eq 0 ]]; then
+		   
+            			# Kontrollera om Setgid är borttaget
+            			permissions=$(stat -c '%A' "$folder_path")
+            			if [[ "${permissions:6:1}" != "s" || "${permissions:6:1}" != "S" ]]; then
+                			echo "Setgid removed."
+            			else
+							echo "ERROR: Setgid not removed as expected."
+            			fi
+        			else
+            			echo "ERROR: Unable to remove Setgid."
+        			fi
+    			else
+        			echo "Invalid choice."
+    			fi
+    		;;
+	  
             7)
                 echo "Modification canceled. Returning to menu."
-                ;;
+            ;;
+			
             *)
                 echo "Invalid input. Returning to menu."
-                ;;
-        esac
-    else
-        echo "ERROR: Folder '$folder_path' does not exist. Please enter a valid folder path."
-    fi
+            ;;
+        	esac
+    		else
+        		echo "ERROR: Folder '$folder_path' does not exist. Please enter a valid folder path."
+    		fi
 
-    echo "----------------------------------------------------------"
-    read -p "Press enter to return to the menu..." enter
+    		echo "----------------------------------------------------------"
+    		read -p "Press enter to return to the menu..." enter
 }
+
 # Funktion för att översätta rättigheter
 translate_permissions() {
     local perms=$1
