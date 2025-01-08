@@ -414,7 +414,7 @@ group_Add() {
 #Funktion för att Lista grupper
 group_List(){
 	clear
-    	echo "=========================================================="
+    echo "=============================================================="
   	echo "          SYSTEM MANAGER (version 1.0.0)"
    	echo "             List of Non-System Groups"
     echo "--------------------------------------------------------------"
