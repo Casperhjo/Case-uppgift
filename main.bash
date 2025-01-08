@@ -275,7 +275,6 @@ user_Modify() {
 	    read -p "Enter the new group id: " group_id
 	if [[ "$group_id" -gt 1000 ]]; then
 	    sudo usermod -g "$group_id" "$username" &>/dev/null
-     
             if [ $? -eq 0 ]; then
   		echo "The group ID has been changed"
             else
@@ -314,7 +313,7 @@ user_Modify() {
             fi
             ;;
         7)
-            read -p 
+	
 	    echo "Changing password for user '$username'..."
             sudo passwd "$username"
             if [[ $? -eq 0 ]]; then
