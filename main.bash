@@ -228,19 +228,65 @@ user_Modify() {
     printf "%-18s: %s\n" "Comment" "$comment"
     printf "%-18s: %s\n" "Home Directory" "$home"
     printf "%-18s: %s\n" "Shell" "$shell"
+    printf "%-18s: %s\n" "Password" "$passwd"
     echo "----------------------------------------------------------"
 
     # Alternativ för att ändra attribut
     echo "What do you want to modify?"
-    echo "1. Comment (Full Name/Description)"
-    echo "2. Home Directory"
-    echo "3. Shell"
-    echo "4. Password"
-    echo "5. Cancel"
-    read -p "Choice [1-5]: " choice
+    echo "1. Username"
+    echo "2. User ID"
+    echo "3. Group ID"
+    echo "4. Comment (Full Name/Description)"
+    echo "5. Home Directory"
+    echo "6. Shell"
+    echo "7. Password" 
+    echo "8. Cancel"
+    
+    read -p "Choice [1-8]: " choice
 
     case $choice in
-        1)
+	1) 
+ 	    read -p "Enter the new username: " new_username
+	    sudo usermod -l "$new_username" "$username" &>/dev/null
+     
+	    if [ $? -eq 0 ]; then
+  		echo "Your username has been changed"
+	    else
+  		echo "ERROR: You cannot have this username."
+	    fi
+	    ;;
+    
+        2) 
+	    read -p "Enter the new user id: " user_id
+	if [[ "$user_id" -gt 1000 ]]; then
+	    sudo usermod -u "$user_id" "$username" &>/dev/null
+	    if [ $? -eq 0 ]; then
+  		echo "Your user id has been changed to $user_id"
+	    else
+  		echo "You cannot have this user id"
+	    fi
+	else
+ 		echo "This User ID is already taken"
+ 	fi
+        ;;
+	    
+
+        3)
+	    read -p "Enter the new group id: " group_id
+	if [[ "$group_id" -gt 1000 ]]; then
+	    sudo usermod -g "$group_id" "$username" &>/dev/null
+     
+            if [ $? -eq 0 ]; then
+  		echo "The group ID has been changed"
+            else
+  		echo "You cannot have this group ID"
+            fi    
+	else
+ 		echo "The group ID has to be above 1000"
+   	fi
+	;;
+	
+ 	4)
             read -p "Enter new comment: " new_comment
             sudo usermod -c "$new_comment" "$username"
             if [[ $? -eq 0 ]]; then
@@ -249,7 +295,7 @@ user_Modify() {
                 echo "Failed to update comment for user '$username'."
             fi
             ;;
-        2)
+        5)
             read -p "Enter new home directory (full path): " new_home
             sudo usermod -d "$new_home" -m "$username"  # -m flyttar filer till den nya katalogen
             if [[ $? -eq 0 ]]; then
@@ -258,7 +304,7 @@ user_Modify() {
                 echo "Failed to update home directory for user '$username'."
             fi
             ;;
-        3)
+        6)
             read -p "Enter new shell (e.g., /bin/bash): " new_shell
             sudo usermod -s "$new_shell" "$username"
             if [[ $? -eq 0 ]]; then
@@ -267,8 +313,9 @@ user_Modify() {
                 echo "Failed to update shell for user '$username'."
             fi
             ;;
-        4)
-            echo "Changing password for user '$username'..."
+        7)
+            read -p 
+	    echo "Changing password for user '$username'..."
             sudo passwd "$username"
             if [[ $? -eq 0 ]]; then
                 echo "Password updated successfully for user '$username'."
@@ -276,7 +323,7 @@ user_Modify() {
                 echo "Failed to update password for user '$username'."
             fi
             ;;
-        5)
+        8)
             echo "Modification canceled."
             ;;
         *)
@@ -311,7 +358,7 @@ user_Delete() {
     read -p "Are you sure you want to remove $username (Y/n): " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         # Remove the user and their home directory
-        sudo userdel -r "$username"
+        sudo userdel -r "$username" &>/dev/null
         if [[ $? -eq 0 ]]; then 
             echo "The user '$username' and their home directory have been removed successfully."
         else
@@ -559,6 +606,7 @@ folder_List() {
     echo "----------------------------------------------------------"
     echo
 
+    ls -l | grep "^d" | awk '{print $9}' | sort
     read -p "Enter the folder path to list: " folder_path
 
     # Kollar att mappen existerar
@@ -579,7 +627,7 @@ folder_View() {
     echo "             View Folder Properties"
     echo "----------------------------------------------------------"
     echo
-
+    
     read -p "Enter the folder path to view: " folder_path
 
     # Kontrollera om mappen existerar
@@ -606,7 +654,6 @@ folder_View() {
         echo "Size:            $size"
         echo "Last Modified:   $last_modified"
         echo "----------------------------------------------------------"
-
     else
         echo "ERROR: Folder '$folder_path' does not exist."
     fi
