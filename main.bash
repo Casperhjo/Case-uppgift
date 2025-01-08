@@ -14,60 +14,68 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-# Funktion that shows the main menu
 show_Main_Menu(){
-	clear
-	echo "=========================================================="
-	echo "	SYSTEM MANAGER (version 1.0.0) "
-	echo "----------------------------------------------------------"
-	echo
-	echo "ci - Computer Info	(Computer information)"
- 	echo 
-  	printf "%-18s %s\n" "ua - User Add		(Create a new user)"
-   	printf "%-18s %s\n" "ul - User List 		(List all login users)"
-    printf "%-18s %s\n" "uv - User View		(View user properties)"
-	printf "%-18s %s\n" "um - User Modify		(Modify user properties)"
-    printf "%-18s %s\n" "ud - User Delete		(Delete a login user)"
+    clear
+    echo "=========================================================="
+    echo "          SYSTEM MANAGER (version 1.0.0)"
+    echo "----------------------------------------------------------"
     echo
-	echo
- 	printf "%-18s %s\n" "ga - Group Add		(Create a new group)"
-  	printf "%-18s %s\n" "gl - Group List		(List all groups, not system groups)"
-   	printf "%-18s %s\n" "gv - Group View		(List all users in a group)"
-    printf "%-18s %s\n" "gm - Group Modify		(Add/remove user to/from a group)"
-    printf "%-18s %s\n" "gd - Group Delete		(Delete a group, not system groups)"
-	echo
- 	echo
-  	printf "%-18s %s\n" "fa - Folder Add		(create a new folder)"
-   	printf "%-18s %s\n" "fl - Folder list		(view content in a folder)"
-    printf "%-18s %s\n" "fv - Folder View		(View folder properteis)"
-    printf "%-18s %s\n" "fm - Folder Modify	(modify folder properties)"
-    printf "%-18s %s\n" "fd - Folder Delete	(Delete a folder)"
-	echo
-	printf "%-18s %s\n" "X - Exit the system manager"
-	echo "----------------------------------------------------------"
-	echo
- 
-	read -p "Choice: " choice
- 	case $choice in
-		ci) computer_Info ;; 	# Call the funtion to display computer info
-  		ua) user_Add ;; 	# Call the funktion for creating a user
-    	ul) user_List;;		# Calls the funktion to list all users that can log in byt not system
-		uv) user_View;;         # kallar på funktionen som vissar all information som finns med i /etc/passwd och vilka grupper en användare tillhör
-  		um) user_Modify;;	# kallar en funktion som låter användaren ändra user properties
-    	ud) user_Delete;;	# Kallar en funktion som tar bort en användare
-      	ga) group_Add;;		# kallar en funktion som låter användaren skapa en ny grupp
-		gl) group_List ;;	# kallar en funktion som listar alla GID >= 1000
-  		gv) group_View ;;	# kallar en funktion som låter användaren kolla vilka användare som är med i en grupp
-    	gm) group_Modify;;	# låter användaren lägga till eller ta bort användare i en grupp
-      	gd) group_Delete;; 	#  låter användaren välja en grupp att ta bort
-      	fa) folder_Add ;;	# kallar en funktion som låter användaren att lägga till en folder
-		fl) folder_List ;;	# kallar en funktion som visar alla folders i ett directory
-  		fv) folder_View ;;	# 
-    	fm) folder_Modify ;;			# Placeholder for modifying folder properties
-      	fd) folder_Delete ;;			# Placeholder for deleting a folder
-		X) exit_Script ;;
-		*) echo "Invalid choice, try again."; sleep 2 ;;
-	esac
+
+    # Sektion: Computer Info
+    printf "%-18s %s\n" "ci - Computer Info" "(Computer information)"
+    echo
+
+    # Sektion: User Management
+    printf "%-18s %s\n" "ua - User Add" "(Create a new user)"
+    printf "%-18s %s\n" "ul - User List" "(List all login users)"
+    printf "%-18s %s\n" "uv - User View" "(View user properties)"
+    printf "%-18s %s\n" "um - User Modify" "(Modify user properties)"
+    printf "%-18s %s\n" "ud - User Delete" "(Delete a login user)"
+    echo
+
+    # Sektion: Group Management
+    printf "%-18s %s\n" "ga - Group Add" "(Create a new group)"
+    printf "%-18s %s\n" "gl - Group List" "(List all groups, not system groups)"
+    printf "%-18s %s\n" "gv - Group View" "(List all users in a group)"
+    printf "%-18s %s\n" "gm - Group Modify" "(Add/remove user to/from a group)"
+    printf "%-18s %s\n" "gd - Group Delete" "(Delete a group, not system groups)"
+    echo
+
+    # Sektion: Folder Management
+    printf "%-18s %s\n" "fa - Folder Add" "(Create a new folder)"
+    printf "%-18s %s\n" "fl - Folder List" "(View content in a folder)"
+    printf "%-18s %s\n" "fv - Folder View" "(View folder properties)"
+    printf "%-18s %s\n" "fm - Folder Modify" "(Modify folder properties)"
+    printf "%-18s %s\n" "fd - Folder Delete" "(Delete a folder)"
+    echo
+
+    # Exit option
+    printf "%-18s %s\n" "X - Exit" "(Exit the System Manager)"
+    echo "----------------------------------------------------------"
+    echo
+
+    # Prompt for user choice
+    read -p "Choice: " choice
+    case $choice in
+        ci) computer_Info ;;
+        ua) user_Add ;;
+        ul) user_List ;;
+        uv) user_View ;;
+        um) user_Modify ;;
+        ud) user_Delete ;;
+        ga) group_Add ;;
+        gl) group_List ;;
+        gv) group_View ;;
+        gm) group_Modify ;;
+        gd) group_Delete ;;
+        fa) folder_Add ;;
+        fl) folder_List ;;
+        fv) folder_View ;;
+        fm) folder_Modify ;;
+        fd) folder_Delete ;;
+        X) exit_Script ;;
+        *) echo "Invalid choice, try again."; sleep 2 ;;
+    esac
 }
 #Shows general computer information
 computer_Info() {
