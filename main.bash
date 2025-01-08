@@ -22,35 +22,35 @@ show_Main_Menu(){
     echo
 
     # Sektion: Computer Info
-    printf "%-18s %s\n" "ci - Computer Info" "(Computer information)"
+    printf "%-25s %s\n" "ci - Computer Info" "(Computer information)"
     echo
 
     # Sektion: User Management
-    printf "%-18s %s\n" "ua - User Add" "(Create a new user)"
-    printf "%-18s %s\n" "ul - User List" "(List all login users)"
-    printf "%-18s %s\n" "uv - User View" "(View user properties)"
-    printf "%-18s %s\n" "um - User Modify" "(Modify user properties)"
-    printf "%-18s %s\n" "ud - User Delete" "(Delete a login user)"
+    printf "%-25s %s\n" "ua - User Add" "(Create a new user)"
+    printf "%-25s %s\n" "ul - User List" "(List all login users)"
+    printf "%-25s %s\n" "uv - User View" "(View user properties)"
+    printf "%-25s %s\n" "um - User Modify" "(Modify user properties)"
+    printf "%-25s %s\n" "ud - User Delete" "(Delete a login user)"
     echo
 
     # Sektion: Group Management
-    printf "%-18s %s\n" "ga - Group Add" "(Create a new group)"
-    printf "%-18s %s\n" "gl - Group List" "(List all groups, not system groups)"
-    printf "%-18s %s\n" "gv - Group View" "(List all users in a group)"
-    printf "%-18s %s\n" "gm - Group Modify" "(Add/remove user to/from a group)"
-    printf "%-18s %s\n" "gd - Group Delete" "(Delete a group, not system groups)"
+    printf "%-25s %s\n" "ga - Group Add" "(Create a new group)"
+    printf "%-25s %s\n" "gl - Group List" "(List all groups, not system groups)"
+    printf "%-25s %s\n" "gv - Group View" "(List all users in a group)"
+    printf "%-25s %s\n" "gm - Group Modify" "(Add/remove user to/from a group)"
+    printf "%-25s %s\n" "gd - Group Delete" "(Delete a group, not system groups)"
     echo
 
     # Sektion: Folder Management
-    printf "%-18s %s\n" "fa - Folder Add" "(Create a new folder)"
-    printf "%-18s %s\n" "fl - Folder List" "(View content in a folder)"
-    printf "%-18s %s\n" "fv - Folder View" "(View folder properties)"
-    printf "%-18s %s\n" "fm - Folder Modify" "(Modify folder properties)"
-    printf "%-18s %s\n" "fd - Folder Delete" "(Delete a folder)"
+    printf "%-25s %s\n" "fa - Folder Add" "(Create a new folder)"
+    printf "%-25s %s\n" "fl - Folder List" "(View content in a folder)"
+    printf "%-25s %s\n" "fv - Folder View" "(View folder properties)"
+    printf "%-25s %s\n" "fm - Folder Modify" "(Modify folder properties)"
+    printf "%-25s %s\n" "fd - Folder Delete" "(Delete a folder)"
     echo
 
     # Exit option
-    printf "%-18s %s\n" "X - Exit" "(Exit the System Manager)"
+    printf "%-25s %s\n" "X - Exit" "(Exit the System Manager)"
     echo "----------------------------------------------------------"
     echo
 
