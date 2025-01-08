@@ -622,7 +622,6 @@ folder_List() {
     echo "----------------------------------------------------------"
     echo
 
-    ls -l | grep "^d" | awk '{print $9}' | sort
     read -p "Enter the folder path to list: " folder_path
 
     # Kollar att mappen existerar
@@ -666,8 +665,8 @@ folder_View() {
         echo "Permissions: "
 		echo
 		echo "$(translate_permissions "$permissions")"
+  		echo
         echo "Sticky Bit:      $sticky_bit"
-		echo
         echo "Setgid:          $setgid"
         echo "Size:            $size"
         echo "Last Modified:   $last_modified"
@@ -841,7 +840,7 @@ folder_Modify() {
 			
             				# Kontrollera om Sticky Bit är borttaget
             				permissions=$(stat -c '%A' "$folder_path")
-            				if [[ "${permissions:9:1}" != "t" || "${permissions:9:1}" != "T" ]]; then
+            				if [[ "${permissions:9:1}" != "t" && "${permissions:9:1}" != "T" ]]; then
                 				echo "Sticky Bit removed."
             				else
                 				echo "ERROR: Sticky Bit not removed as expected."
@@ -882,7 +881,7 @@ folder_Modify() {
 		   
             			# Kontrollera om Setgid är borttaget
             			permissions=$(stat -c '%A' "$folder_path")
-            			if [[ "${permissions:6:1}" != "s" || "${permissions:6:1}" != "S" ]]; then
+            			if [[ "${permissions:6:1}" != "s" && "${permissions:6:1}" != "S" ]]; then
                 			echo "Setgid removed."
             			else
 							echo "ERROR: Setgid not removed as expected."
