@@ -267,9 +267,9 @@ user_Modify() {
     
     	2) 
 		read -p "Enter the new user id: " user_id
-		if [[ "$user_id" -gt 1000 ]]; then
+		if [[ "$user_id" -gt 1000 ]]; then # Kollar om användaren skriver in uid över 1000 och om det gick att sätta det som user id
 	    		sudo usermod -u "$user_id" "$username" &>/dev/null
-	    		if [ $? -eq 0 ]; then
+	    		if [ $? -eq 0 ]; then 	
   				echo "Your user id has been changed to $user_id"
 	    		else
   				echo "You cannot have this user id"
@@ -281,7 +281,7 @@ user_Modify() {
 	    
     	3)
 		read -p "Enter the new group id: " group_id
-		if [[ "$group_id" -gt 1000 ]]; then
+		if [[ "$group_id" -gt 1000 ]]; then # Kollar så att användaren skriver in ett gid over 1000
 	    		sudo usermod -g "$group_id" "$username" &>/dev/null
             			if [ $? -eq 0 ]; then
   					echo "The group ID has been changed"
