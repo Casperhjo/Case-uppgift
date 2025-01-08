@@ -607,11 +607,12 @@ folder_Add() {
     #Kollar om mappen redan finns
     if [ -d "$folder_name" ]; then
         echo "Folder $folder_name already exists. Please enter another folder name."
-        read -p "Press enter to continue" enter
     else
         mkdir "$folder_name"  
         echo "The folder $folder_name has been created."
     fi
+    
+    read -p "Press enter to return to the menu..." enter
 }
 # Funktion för att lista mappinnehåll
 folder_List() {
@@ -632,7 +633,7 @@ folder_List() {
         echo "The folder does not exist."
     fi
 
-    read -p "Press enter to continue..." enter
+    read -p "Press enter to return to the menu..." enter
 }
 
 folder_View() {
